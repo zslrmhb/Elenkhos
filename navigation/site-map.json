@@ -1,0 +1,45 @@
+{
+ "generated_at": "2026-06-13T21:00:00Z",
+ "pages": [
+  {
+   "id": "overview",
+   "title": "Overview",
+   "path": "index.html"
+  },
+  {
+   "id": "projects",
+   "title": "Project",
+   "path": "pages/projects.html"
+  },
+  {
+   "id": "lessons",
+   "title": "Lessons",
+   "path": "pages/lessons.html"
+  },
+  {
+   "id": "syllabus",
+   "title": "Syllabus",
+   "path": "pages/syllabus.html"
+  },
+  {
+   "id": "roadmap",
+   "title": "Roadmap",
+   "path": "pages/roadmap.html"
+  },
+  {
+   "id": "niche",
+   "title": "Niche",
+   "path": "pages/niche.html"
+  },
+  {
+   "id": "evidence",
+   "title": "Evidence",
+   "path": "pages/evidence.html"
+  },
+  {
+   "id": "resources",
+   "title": "Resources",
+   "path": "pages/resources.html"
+  }
+ ]
+}
