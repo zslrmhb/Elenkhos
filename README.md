@@ -29,13 +29,12 @@ Do not add new project scope without cutting equivalent work. Do not use paid cl
 
 ## GitHub Pages
 
-This repo publishes the static site from the repository root through the workflow in `.github/workflows/pages.yml`.
+This repo is a static site at the repository root.
 
-After pushing to `main`, enable GitHub Pages in repo settings:
+Enable GitHub Pages in repo settings:
 
-`Settings -> Pages -> Source: GitHub Actions`
+`Settings -> Pages -> Source: Deploy from a branch -> Branch: main -> Folder: /root`
 
 Expected URL:
 
 `https://zslrmhb.github.io/Elenkhos/`
-
