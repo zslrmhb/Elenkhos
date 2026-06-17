@@ -67,12 +67,12 @@
 
     // One capstone, two independently reviewable packages.
     var proj = el("section", {"aria-labelledby":"proj-h"});
-    proj.appendChild(el("h2", {id:"proj-h", text:"One capstone, two packages"}));
-    proj.appendChild(el("p", {className:"lede", text:"A single model lineage runs from audited data and from-scratch pretraining through Qwen post-training, quantized export, C++ serving, scheduling, and release qualification."}));
+    proj.appendChild(el("h2", {id:"proj-h", text:"The project"}));
+    proj.appendChild(el("p", {className:"lede", text:"One focused inference-systems project over 12 weeks: a from-scratch LLM inference engine taken deep on the scheduling stack — paged KV cache, Orca continuous batching, Sarathi-Serve chunked prefill, and SLO-aware admission — benchmarked head-to-head against vLLM."}));
     var pg = el("div", {className:"grid grid-2"});
     M.phases.filter(function(p){return p.phase_id!=="phase-interview-gates";}).forEach(function(ph, i){
       var c = el("div", {className:"card", "data-canonical-id":ph.phase_id});
-      c.appendChild(el("div", {className:"path-meta", text:"Package "+(i===0?"A":"B")}));
+      c.appendChild(el("div", {className:"path-meta", text:"12-week project"}));
       c.appendChild(el("h3", {text:ph.title}));
       c.appendChild(el("p", {text:ph.outcome}));
       var secs = M.sections.filter(function(s){return s.phase_id===ph.phase_id;});
@@ -662,8 +662,8 @@
     if(M.build_sequence && M.build_sequence.length){
       var bseq=el("section",{"aria-labelledby":"seq-h"});
       bseq.appendChild(el("h2",{id:"seq-h",text:"Chronological build order — what to do first, then next"}));
-      bseq.appendChild(el("p",{className:"lede",text:"The committed 12-week sequence is one end-to-end capstone. Package A produces the model lineage; Package B exports, serves, schedules, qualifies, and reports it. The eval harness is built early because it gates every later release."}));
-      var stbl=el("table",{}); stbl.appendChild(el("caption",{text:"Recommended order across the ~204 committed hours (Jun 22 – Sep 11)"}));
+      bseq.appendChild(el("p",{className:"lede",text:"The committed 12-week sequence builds one inference engine, module by module: each stage gates the next, so the paged KV cache must pass parity before continuous batching, and batching must match the oracle before chunked prefill."}));
+      var stbl=el("table",{}); stbl.appendChild(el("caption",{text:"Recommended order across the ~174 committed hours (Jun 22 – Sep 13)"}));
       stbl.appendChild(el("thead",{},[el("tr",{},["#","When","Track","Step","What it produces"].map(function(h){return el("th",{text:h});}))]));
       var stb=el("tbody",{});
       M.build_sequence.forEach(function(s){
