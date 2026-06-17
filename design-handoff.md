@@ -5,7 +5,7 @@ Date: 2026-06-14 · Structural pass regenerated after the 13-stage capstone revi
 ## Frozen content contract
 
 - Manifest: `website/content-manifest.json`
-- SHA-256: `9ea27dbafd20feffaeb88ee99c63a7701a5bef04909e186e10a4aa0a5fa9880e`
+- SHA-256: `76c1756bac126a6bc1f93be168f985fdd86f38c77eecae676fc1fa27db607ac8`
 - Derived data files (regenerate only via the builder, never hand-edit):
   - `website/manifest-data.js` (window.MANIFEST = manifest)
   - `website/signals-data.js` (window.SIGNALS, derived from `data/keyword-analysis/priority-matrix.json` + roadmap evidence inventory)

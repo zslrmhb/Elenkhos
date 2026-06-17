@@ -4,7 +4,7 @@
     {
       "path": "data/roadmap/roadmap.yaml",
       "generated_at": "2026-06-16T03:24:11Z",
-      "checksum": "bf7e3733d5bf6bb4911e74395c7fd1e952c41ac053d238c55deb195c56e41665"
+      "checksum": "38c7d2468b87ea08aa576bdb6953d83d33648025f0dde2e0da539a5da419fa91"
     },
     {
       "path": "data/keyword-analysis/priority-matrix.json",
@@ -74,7 +74,7 @@
         "thesis": "Build Elenkhos and ElenkhosServe. Post-train the instruction-capable Qwen3-1.7B student into a structured policy that identifies assumptions, asks the minimum decision-changing questions, decomposes, verifies, and answers; retain Elenkhos-70M-Lab as the from-scratch CS336 systems baseline. Then qualify, canary, promote, or roll back reasoning-model releases using correctness, question-quality, latency, memory, overload, and fault gates. This combines the user's teaching experience, AWS migration reliability, Jetson/TensorRT optimization, and Python/C debugging.",
         "skill_axes": [
           "Philosophical-reasoning-policy distillation (Socratic questioning, argument reconstruction, dialectic, fallacy detection) and evaluation",
-          "C++ LLM serving, canary, and rollback",
+          "From-scratch LLM inference engine (continuous batching, paged KV cache, prefix cache) benchmarked vs vLLM, plus a llama.cpp/Metal edge runtime, canary, and rollback",
           "heterogeneous inference performance and quantization"
         ],
         "supported_roles": [
@@ -615,7 +615,7 @@
       "phase_id": "phase-cpp-serving",
       "title": "Package B · elenkhos-serve",
       "outcome": "Export, quantize, serve, schedule, benchmark, qualify, and roll back the same model lineage on cloud CUDA and the 16GB M4 target.",
-      "description": "The serving half of the same capstone: export → C++ runtime → admission control → reliability → cross-layer release report.",
+      "description": "The serving half of the same capstone: export → ElenkhosServe, a from-scratch inference engine (continuous batching, paged KV cache, prefix-cache reuse) benchmarked against vLLM → a llama.cpp/Metal on-device edge runtime for the 16GB M4 → scheduling and admission control → reliability → cross-layer release report.",
       "milestone": "One blocked release, one automatic canary rollback, one evidence-backed promotion, and one reproducible cross-layer report.",
       "section_ids": [
         "section-p2-export",
@@ -740,12 +740,12 @@
     {
       "section_id": "section-p2-engine",
       "phase_id": "phase-cpp-serving",
-      "title": "C++ inference adapter",
+      "title": "ElenkhosServe inference engine (from-scratch core + edge runtime)",
       "lesson_ids": [
         "lesson-p2-engine"
       ],
-      "integration_checkpoint": "The CMake C++20 service streams the selected GGUF release with cancellation and graceful shutdown.",
-      "name": "C++ inference adapter"
+      "integration_checkpoint": "The from-scratch engine streams via continuous batching over a paged KV cache, lands within range of vLLM on a shared benchmark, and the llama.cpp/Metal edge runtime serves the same GGUF on the 16GB M4.",
+      "name": "ElenkhosServe inference engine (from-scratch core + edge runtime)"
     },
     {
       "section_id": "section-p2-scheduler",
@@ -1745,31 +1745,32 @@
     {
       "lesson_id": "lesson-p2-engine",
       "unit_id": "unit-p2-engine",
-      "title": "P2 · C++ engine adapter & service layer",
+      "title": "P2 · ElenkhosServe — from-scratch inference engine",
       "phase_id": "phase-cpp-serving",
       "section_id": "section-p2-engine",
       "status": "selective_now",
       "estimated_hours": 18,
-      "problem": "Serving a model in production means owning the control plane in a systems language — lifecycle, streaming, deadlines — while delegating kernels to a real runtime.",
-      "why_it_matters": "This is the niche's sharpest proof and the community-hottest signal (sig-llm-inference). The abstraction boundary (own scheduling/admission; delegate kernels to llama.cpp) is exactly what makes it credible and honest.",
+      "problem": "Modern LLM serving throughput comes from a few mechanisms — continuous batching, a paged KV cache, and prefix-cache reuse — wrapped in an OpenAI-compatible control plane. Reimplementing that core the way nano-vllm and mini-sglang do, then benchmarking it against vLLM, is the sharpest possible proof that you understand how production inference engines actually work.",
+      "why_it_matters": "This is the niche's sharpest proof and the community-hottest signal (sig-llm-inference). A from-scratch engine that lands within range of vLLM on a shared benchmark — paired with a llama.cpp/Metal edge runtime that ships on a 16GB laptop — demonstrates both the algorithmic core and on-device deployment, while delegating low-level kernels keeps the scope honest.",
       "concepts": [
-        "RAII & explicit ownership",
-        "llama.cpp C/C++ API integration",
-        "quantized GGUF loading",
-        "OpenAI-compatible request/response",
-        "streaming token callbacks",
+        "continuous batching (iteration-level scheduling)",
+        "paged KV cache (block allocator + per-request block tables)",
+        "prefix-cache reuse (shared-prefix block sharing)",
+        "OpenAI-compatible request/response & streaming",
         "deadlines, cancellation & graceful shutdown",
+        "llama.cpp/Metal edge runtime & quantized GGUF deployment",
+        "benchmarking vs vLLM (throughput, TTFT, goodput, memory)",
         "single-agent tool loop, typed actions, state and budget enforcement"
       ],
-      "build_it": "Wrap the llama.cpp context with RAII, expose an OpenAI-compatible streaming endpoint via a maintained C++ HTTP/gRPC library, add request IDs and health/readiness.",
+      "build_it": "Implement the paged KV cache, continuous-batching scheduler, and prefix-cache reuse in Python, expose an OpenAI-compatible streaming endpoint, and run a thin llama.cpp/Metal edge server for the on-device path.",
       "use_it": "Serve a 0.5B-3B quantized open model (and optionally the Elenkhos Train checkpoint via a PyTorch reference endpoint).",
-      "ship_it": "Publish the service repo with a CMake build, sanitizer/test targets, the bounded ElenkhosAgent demo, and an architecture README that separates owned code, application orchestration, and library behavior.",
+      "ship_it": "Publish the engine repo with tests, the vLLM/llama.cpp benchmark, the bounded ElenkhosAgent demo, and an architecture README that separates owned engine code (scheduler, batching, KV paging, prefix cache), the edge runtime, application orchestration, and delegated kernels.",
       "exercises": [
         {
           "exercise_id": "ex-p2e-1",
           "type": "project",
-          "prompt": "Build the RAII engine adapter + OpenAI-compatible streaming endpoint over a quantized GGUF model.",
-          "completion_gate": "Streaming completion works; deterministic test mode + sanitizer targets pass."
+          "prompt": "Build the paged KV cache + continuous-batching scheduler + OpenAI-compatible streaming endpoint.",
+          "completion_gate": "Streaming completion works; batched output matches the single-request reference in deterministic test mode."
         },
         {
           "exercise_id": "ex-p2e-2",
@@ -1779,30 +1780,30 @@
         }
       ],
       "tests_and_measurements": [
-        "CMake reproducible build",
-        "synchronous-reference vs service token/output parity",
-        "sanitizer + unit-test pass",
-        "streaming + cancellation tests",
+        "reference vs batched-engine token/output parity",
+        "paged-KV correctness + concurrency tests",
+        "prefix-cache TTFT win on shared-prompt traces",
+        "ElenkhosServe vs vLLM vs llama.cpp benchmark (throughput, p99 TTFT, goodput, memory)",
         "application-loop terminal correctness, required-slot efficiency, malformed-action rejection, and deterministic replay"
       ],
-      "proof_artifact": "ElenkhosServe C++ engine adapter, service layer, and a small interactive ElenkhosAgent demo.",
+      "proof_artifact": "ElenkhosServe from-scratch inference engine (continuous batching, paged KV cache, prefix-cache reuse) with a vLLM benchmark, a llama.cpp/Metal edge runtime, and a small interactive ElenkhosAgent demo.",
       "mastery_gate": [
         "implement",
         "test",
         "explain",
         "integrate"
       ],
-      "objective": "Build the C++ engine adapter and OpenAI-compatible streaming service layer over llama.cpp, then prove it in one bounded single-agent application loop over ElenkhosEnv.",
+      "objective": "Build the ElenkhosServe inference engine — continuous batching, paged KV cache, prefix-cache reuse, and an OpenAI-compatible streaming API — benchmark it against vLLM, keep a llama.cpp/Metal edge runtime for the M4, and prove the whole path in one bounded single-agent application loop over ElenkhosEnv.",
       "exact_inputs": "Exported Elenkhos-1.7B-SFT/DPO GGUF (Q8_0, Q4_K_M); a small bootstrap GGUF; the release-manifest schema; the 50 frozen ElenkhosEnv episodes and typed ask(slot)/answer(value) action schema.",
-      "architecture_config": "language: C++20, CMake build, sanitizers in CI\nbackend: llama.cpp (model execution, tokenizer, quantization kernels, KV storage) delegated\nreference path: one synchronous request, no queue, one context, deterministic token callback; retained for parity/debugging\nAPI: OpenAI-compatible streaming completions; cancellation + deadlines\napplication: thin Python client; one model; typed ask -> environment observation -> answer loop; max-turn and question-budget enforcement\nowned: request lifecycle, streaming, release manifest; delegated: kernels to llama.cpp, comparison to vLLM\n",
-      "abstraction_level": "Own the narrow C++ backend interface, RAII lifecycle, HTTP streaming, deadlines, cancellation, readiness, graceful shutdown, manifest enforcement, and the small application protocol. Delegate tokenizer/model execution, quantized kernels, Metal/CUDA kernels, and KV storage to llama.cpp. Use a plain typed Python client rather than LangChain/LlamaIndex so tool state, retries, budgets, and failure behavior remain inspectable. Use vLLM only as an external reference baseline.",
+      "architecture_config": "engine (Layer 2, centerpiece): Python over PyTorch on CUDA; iteration-level scheduler, continuous batching, paged KV cache, prefix-cache reuse; OpenAI-compatible streaming\nlineage: nano-vllm (~1.2k-line pure-Python vLLM core, benches within ~5% of vLLM) and mini-sglang (RadixAttention + scheduler) studied as design references; kernels delegated to PyTorch/FlashAttention, not copied\nedge runtime (Layer 1): thin llama.cpp/Metal server hosting the quantized GGUF on the 16GB M4; the on-device deployment and benchmark baseline\nbenchmark: ElenkhosServe vs vLLM vs llama.cpp on one model/trace — throughput, p99 TTFT, goodput, peak memory\nreference path: one synchronous request, no batching, deterministic token callback; retained for parity/debugging\napplication: thin Python client; one model; typed ask -> environment observation -> answer loop; max-turn and question-budget enforcement\nowned: scheduler, batching, KV paging, prefix cache, request lifecycle, release manifest; delegated: attention/matmul kernels (PyTorch/FlashAttention) and the comparison engine (vLLM); optional stretch: one hand-written CUDA/Metal kernel\n",
+      "abstraction_level": "Own the engine algorithms — iteration-level scheduler, continuous batching, paged KV-cache allocator, prefix-cache reuse — plus the request lifecycle, OpenAI-compatible streaming, deadlines, cancellation, readiness, graceful shutdown, manifest enforcement, and the small application protocol. Delegate attention/matmul kernels to PyTorch/FlashAttention (and tokenizer/quantized execution to llama.cpp in the edge runtime); a single hand-written CUDA/Metal kernel is an optional depth spike, not a requirement. Use a plain typed Python client rather than LangChain/LlamaIndex so tool state, retries, budgets, and failure behavior remain inspectable. Use vLLM only as an external benchmark baseline.",
       "implementation_steps": [
-        "Stand up the CMake C++20 build and implement src/reference/synchronous_request.cc: load one manifest/model, execute one request, print token IDs/text/timings, and release all state.",
-        "Wrap the same backend in the narrow RAII Engine interface; require token/output parity with the synchronous reference fixture before adding concurrency.",
-        "Implement the request lifecycle: parse, stream tokens, cancellation, and deadlines.",
-        "Expose an OpenAI-compatible streaming endpoint with readiness and health.",
-        "Bind a release manifest (model, tokenizer, quant, runtime, SLO) to each served model.",
-        "Bootstrap on a small GGUF, then serve untouched Qwen3-1.7B and the exported Elenkhos releases.",
+        "Stand up a single-request reference path (no batching) that loads a model and streams tokens deterministically; keep it as the parity/debugging oracle.",
+        "Implement the paged KV-cache allocator (fixed-size blocks, per-request block tables) and verify it against the reference path.",
+        "Add the iteration-level scheduler and continuous batching: admit/step/evict requests each decode iteration; require output parity with the reference before optimizing.",
+        "Add prefix-cache reuse (shared-prefix block sharing, nano-vllm/mini-sglang style) and measure the TTFT win on shared-system-prompt traces.",
+        "Expose an OpenAI-compatible streaming endpoint with readiness, health, cancellation, deadlines, and a release manifest (model, tokenizer, quant, runtime, SLO) bound to each served model.",
+        "Stand up the llama.cpp/Metal edge runtime serving the quantized GGUF on the M4, then run the head-to-head benchmark (ElenkhosServe vs vLLM vs llama.cpp): throughput, p99 TTFT, goodput, peak memory.",
         "Implement clients/elenkhos_agent.py: validate typed ask/answer actions, call ElenkhosEnv, append observations, enforce max turns/question budget, and emit a replayable session trace.",
         "Add malformed-action, repeated-question, timeout, premature-answer, and deterministic-replay tests for the application loop."
       ],
@@ -1811,15 +1812,17 @@
       ],
       "training_phases": null,
       "starter_interfaces": [
-        "src/reference/synchronous_request.cc # minimal llama2.c-style lifecycle oracle",
-        "serve/engine.hpp        # class Engine { generate(req, on_token) }",
-        "serve/http_server.cpp   # OpenAI-compatible streaming + cancellation",
-        "serve/release.hpp       # release-manifest.json load + checksum",
-        "clients/elenkhos_agent.py # bounded ask/observe/answer application loop",
-        "clients/session_schema.py # typed actions, observations, and replay trace",
-        "CMakeLists.txt"
+        "engine/reference.py       # single-request deterministic oracle",
+        "engine/kv_cache.py        # paged block allocator + per-request block tables",
+        "engine/scheduler.py       # iteration-level scheduler + continuous batching",
+        "engine/prefix_cache.py    # shared-prefix block reuse",
+        "engine/server.py          # OpenAI-compatible streaming + cancellation",
+        "engine/release.py         # release-manifest.json load + checksum",
+        "edge/llama_server.md       # llama.cpp/Metal on-device runtime config",
+        "bench/run.py              # ElenkhosServe vs vLLM vs llama.cpp harness",
+        "clients/elenkhos_agent.py # bounded ask/observe/answer application loop"
       ],
-      "exit_gate": "The synchronous reference and service path produce identical deterministic token IDs; a reproducible CMake build streams completions, cancellation cleans up in-flight work, shutdown drains gracefully, and the bounded client deterministically replays frozen ElenkhosEnv sessions without hiding orchestration behind an agent framework.",
+      "exit_gate": "The reference and batched engine produce identical deterministic token IDs; continuous batching over the paged KV cache passes correctness and concurrency tests; prefix-cache reuse shows a measured TTFT win; the head-to-head benchmark reports ElenkhosServe, vLLM, and llama.cpp on one trace; the edge runtime serves the GGUF on the M4; and the bounded client deterministically replays frozen ElenkhosEnv sessions without hiding orchestration behind an agent framework.",
       "official_api_docs": [
         {
           "title": "llama.cpp server",
@@ -1833,6 +1836,16 @@
         }
       ],
       "reference_implementations": [
+        {
+          "title": "nano-vllm",
+          "url": "https://github.com/GeeeekExplorer/nano-vllm",
+          "note": "~1.2k-line pure-Python reimplementation of vLLM's core (prefix caching, CUDA graphs, tensor parallelism) that benches within ~5% of vLLM — the design lineage for this engine"
+        },
+        {
+          "title": "mini-sglang",
+          "url": "https://github.com/sgl-project/mini-sglang",
+          "note": "compact SGLang reimplementation (RadixAttention prefix-cache reuse, chunked prefill, overlap scheduling) — reference for the radix/prefix cache and scheduler"
+        },
         {
           "title": "Karpathy llama2.c",
           "url": "https://github.com/karpathy/llama2.c",
@@ -1946,7 +1959,7 @@
       "objective": "Implement a bounded-queue scheduler with token-aware admission control, cancellation, and graceful shutdown for the serving engine.",
       "exact_inputs": "The engine adapter interface; seeded request traces (short, mixed, overload); per-request token-budget estimates.",
       "architecture_config": "queue: bounded; policies: FIFO baseline + one token/SLO-aware policy\nadmission: KV/memory-aware threshold; overload -> 429\nlifecycle: per-request timeout, cancellation cleanup, drain on shutdown\n",
-      "abstraction_level": "Own the C++ queue, policy, admission arithmetic, request state, cancellation, and overload behavior. Use standard C++20 synchronization primitives and llama.cpp's exposed capacity signals; do not reimplement llama.cpp batching or KV allocation.",
+      "abstraction_level": "Own the request queue, scheduling policy, admission arithmetic, request state, cancellation, and overload behavior — the admission front-door in front of ElenkhosServe's batching engine, distinct from the engine's iteration-level batch scheduler. Build admission on the engine's own KV/capacity signals (paged-block availability, token budgets) rather than a black-box runtime.",
       "implementation_steps": [
         "Implement the bounded request queue and a FIFO baseline policy.",
         "Add token-budget estimation and a KV/memory-aware admission threshold.",
@@ -1977,6 +1990,16 @@
           "title": "Orca (OSDI 22)",
           "url": "https://www.usenix.org/conference/osdi22/presentation/yu",
           "note": "the paper that introduced iteration-level scheduling / continuous batching"
+        },
+        {
+          "title": "nano-vllm",
+          "url": "https://github.com/GeeeekExplorer/nano-vllm",
+          "note": "compact, readable scheduler + continuous-batching loop in pure Python"
+        },
+        {
+          "title": "mini-sglang",
+          "url": "https://github.com/sgl-project/mini-sglang",
+          "note": "overlap scheduling and RadixAttention admission/eviction in a minimal codebase"
         }
       ],
       "further_reading": [
@@ -3516,7 +3539,7 @@
     },
     {
       "unit_id": "unit-p2-engine",
-      "title": "P2 · C++ engine adapter & service layer",
+      "title": "P2 · ElenkhosServe — from-scratch inference engine",
       "signal_ids": [
         "sig-llm-inference",
         "sig-backend-apis"
