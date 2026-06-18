@@ -663,7 +663,7 @@
       var bseq=el("section",{"aria-labelledby":"seq-h"});
       bseq.appendChild(el("h2",{id:"seq-h",text:"Chronological build order — what to do first, then next"}));
       bseq.appendChild(el("p",{className:"lede",text:"The committed 12-week sequence builds one inference engine, module by module: each stage gates the next, so the paged KV cache must pass parity before continuous batching, and batching must match the oracle before chunked prefill."}));
-      var stbl=el("table",{}); stbl.appendChild(el("caption",{text:"Recommended order across the ~174 committed hours (Jun 22 – Sep 13)"}));
+      var stbl=el("table",{}); stbl.appendChild(el("caption",{text:"Recommended order across the ~182 committed hours (Jun 22 – Sep 13)"}));
       stbl.appendChild(el("thead",{},[el("tr",{},["#","When","Track","Step","What it produces"].map(function(h){return el("th",{text:h});}))]));
       var stb=el("tbody",{});
       M.build_sequence.forEach(function(s){
