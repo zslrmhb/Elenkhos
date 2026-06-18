@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-06-16T23:30:00Z",
+  "generated_at": "2026-06-17T00:30:00Z",
   "sources": [
     {
       "path": "data/roadmap/roadmap.yaml",
-      "generated_at": "2026-06-16T23:30:00Z",
-      "checksum": "1162e944b6fb9802be2bccd75ba3539bccc1cd03da0b0b327d5743e8434c2bdf"
+      "generated_at": "2026-06-17T00:30:00Z",
+      "checksum": "0e9aa26bd7fcb0704b0289b6a35e24b533637f73b88e5037b9722c339c0df293"
     },
     {
       "path": "data/keyword-analysis/priority-matrix.json",
@@ -24,7 +24,7 @@
   ],
   "freshness": {
     "status": "current",
-    "roadmap_generated_at": "2026-06-16T23:30:00Z",
+    "roadmap_generated_at": "2026-06-17T00:30:00Z",
     "market_generated_at": "2026-06-12T20:00:00Z",
     "xiaohongshu_generated_at": "2026-06-12T20:00:00Z",
     "reason": "Dual-source opportunity-roi-v3 run 2026-06-12. Xiaohongshu corpus collected 2026-06-12 (56 posts/50 authors); re-check market+community Aug-Oct 2026.",
@@ -522,7 +522,7 @@
       ],
       "objective": "Build a single-request decode loop over a small model with an OpenAI-compatible streaming API, a deterministic token oracle, and a Mac-local benchmark harness (throughput, TTFT, TBT, p99, memory) over seeded traces; record the first benchmark — the MVP vs llama.cpp on the M4.",
       "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, the seeded traces, and the running report; production baselines for the benchmark module.",
-      "architecture_config": "engine: Python over PyTorch (MPS); model: Qwen2.5-0.5B / Llama-3.2-1B\nAPI: OpenAI-compatible /v1/completions streaming; sampling, stop conditions, cancellation\noracle: deterministic seeded path; harness: throughput, TTFT, TBT, p99, peak memory; seeded traces (short, mixed, bursty)\nfirst benchmark: MVP vs llama.cpp on the M4 (the incremental baseline begins here)\n",
+      "architecture_config": "engine: Python over PyTorch (MPS); primary model: Qwen3-0.6B (standard dense, GQA + RoPE, standard KV cache)\nAPI: OpenAI-compatible /v1/completions + /v1/chat/completions streaming — so standard industry benchmark tools (vLLM `bench serve`, GenAI-Perf) can drive it exactly like vLLM/SGLang\noracle: deterministic seeded path; harness: throughput, TTFT, TPOT/ITL, p50/p90/p99, peak memory; seeded traces (short, mixed, bursty)\nfirst benchmark: MVP vs llama.cpp on the M4 with Qwen3-0.6B (the incremental baseline begins here)\n",
       "abstraction_level": "Own the decode loop, streaming API, oracle, and harness. Delegate matmul/attention to PyTorch. Mac-only here — cloud CUDA and multi-engine comparison arrive in Weeks 7-8 once there is a mature engine worth comparing.",
       "implementation_steps": [
         "Implement a single-request decode loop + OpenAI-compatible streaming endpoint (sampling, stop conditions, cancellation).",
@@ -823,8 +823,9 @@
       "concepts": [
         "chunked prefill & token budget",
         "latency-throughput Pareto",
-        "apples-to-apples multi-engine benchmarking",
-        "multi-device (CUDA + Apple Silicon)",
+        "industry-standard harness (vLLM bench serve / GenAI-Perf over OpenAI APIs)",
+        "ShareGPT + Poisson request-rate sweeps; online vs offline",
+        "TTFT / TPOT / goodput at p50/p90/p99 vs MLPerf SLOs",
         "data-driven regime selection"
       ],
       "build_it": "Implement chunked prefill + stall-free batching; verify oracle parity; sweep the Pareto frontier per device.",
@@ -858,13 +859,13 @@
       ],
       "objective": "Implement Sarathi-Serve chunked prefill + the latency-throughput Pareto, then stand up vLLM, SGLang, and llama.cpp and run the shared traces through every engine on both devices; report the matrix and choose the target regime.",
       "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, the seeded traces, and the running report; production baselines for the benchmark module.",
-      "architecture_config": "prefill: token-budgeted chunks piggybacked with decode (stall-free); Pareto sweep of token budget / batch / chunk size\nbaselines: vLLM (CUDA), SGLang (CUDA), llama.cpp (Apple Silicon + CUDA); your engine on both devices\nmetrics: throughput, p99 TTFT/TBT, goodput, peak memory; configs + run cards checked in\noutput: comparison matrix + a defended target regime for the optimization\npapers: Sarathi-Serve (OSDI'24); vLLM/SGLang/llama.cpp as baselines\n",
+      "architecture_config": "prefill: token-budgeted chunks piggybacked with decode (stall-free); Pareto sweep of token budget / batch / chunk size\nbenchmark methodology (industry-standard):\n  harness: drive ALL engines through their OpenAI-compatible APIs with ONE standard tool (vLLM `vllm bench serve`, `python -m sglang.bench_serving`, or NVIDIA GenAI-Perf/AIPerf) — same client, same traces, maximally apples-to-apples\n  traffic: ShareGPT (realistic conversational lengths) + synthetic fixed in/out lengths; Poisson arrival at a target request rate (QPS); sweep rates online, plus offline (request-rate=inf) for max throughput\n  metrics (mean + p50/p90/p99): TTFT (prefill), TPOT/ITL (decode), end-to-end latency, throughput (output tok/s, req/s), goodput (req/s meeting an SLO)\n  SLO scenarios (MLPerf): Conversational (TTFT<=2s, TPOT<=100ms), Interactive (TTFT<=0.5s, TPOT<=30ms), Offline (throughput), Single-stream (p90)\n  rigor: warmup, fixed seed, pinned engine versions, identical model/quant/tokenizer/traces/hardware/max-concurrency; run cards; beware systemic measurement bias\nbaselines: vLLM (CUDA), SGLang (CUDA), llama.cpp (Apple Silicon + CUDA); your engine on both devices\npapers/tools: Sarathi-Serve (OSDI'24); vLLM/SGLang/GenAI-Perf benchmark harnesses; MLPerf Inference scenarios\n",
       "abstraction_level": "Own the chunking policy, the Pareto sweep, and the comparison methodology. Use production engines as external baselines — same model, traces, metrics. Be honest about where they win and where they don't.",
       "implementation_steps": [
         "Implement chunked prefill + stall-free batching; verify oracle parity; sweep the Pareto frontier per device.",
-        "Stand up vLLM and SGLang on a rented CUDA GPU and llama.cpp on the M4 (and CUDA) with the same model/quant.",
-        "Run the shared traces through every engine on every device; build the comparison matrix from checked-in run cards.",
-        "Name the target regime (where you match/beat: Apple Silicon, memory-constrained, low concurrency); write the report's benchmark section."
+        "Stand up vLLM and SGLang on a rented CUDA GPU and llama.cpp on the M4 (and CUDA), same model (Qwen3-0.6B) and quant.",
+        "Benchmark EVERY engine (incl. yours) with ONE standard tool over their OpenAI APIs — GenAI-Perf / vLLM bench serve — using ShareGPT + Poisson request-rate sweeps and offline max-throughput.",
+        "Report TTFT/TPOT/E2E/throughput/goodput (mean + p50/p90/p99) against MLPerf Interactive/Conversational SLOs; name the target regime; write the report's benchmark section."
       ],
       "execution_ladder": [
 
@@ -882,29 +883,29 @@
       ],
       "reference_implementations": [
         {
+          "title": "vLLM benchmarks (`vllm bench serve`)",
+          "url": "https://github.com/vllm-project/vllm/tree/main/benchmarks",
+          "note": "the standard serving benchmark harness; drives any OpenAI-compatible endpoint"
+        },
+        {
+          "title": "SGLang bench_serving",
+          "url": "https://github.com/sgl-project/sglang/tree/main/benchmark",
+          "note": "ShareGPT + --request-rate Poisson serving benchmark"
+        },
+        {
+          "title": "NVIDIA GenAI-Perf / AIPerf",
+          "url": "https://docs.nvidia.com/nim/benchmarking/llm/latest/metrics.html",
+          "note": "production-grade benchmarking of any OpenAI endpoint; TTFT/TPOT/ITL/throughput at percentiles"
+        },
+        {
           "title": "Sarathi-Serve (OSDI'24)",
           "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
           "note": "chunked prefill"
         },
         {
-          "title": "mini-sglang (LMSYS blog)",
-          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
-          "note": "RadixAttention + chunked prefill + overlap scheduling"
-        },
-        {
-          "title": "vLLM",
-          "url": "https://github.com/vllm-project/vllm",
-          "note": "CUDA baseline"
-        },
-        {
-          "title": "SGLang",
+          "title": "vLLM / SGLang / llama.cpp",
           "url": "https://github.com/sgl-project/sglang",
-          "note": "CUDA baseline"
-        },
-        {
-          "title": "llama.cpp",
-          "url": "https://github.com/ggml-org/llama.cpp",
-          "note": "Apple Silicon + CUDA baseline"
+          "note": "the production baselines benchmarked against"
         }
       ],
       "further_reading": [
@@ -925,9 +926,19 @@
       ],
       "primary_sources": [
         {
-          "title": "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve",
-          "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
-          "reason": "chunked prefill and stall-free batching"
+          "title": "MLPerf Inference (small-LLM v5.1)",
+          "url": "https://mlcommons.org/2025/09/small-llm-inference-5-1/",
+          "reason": "the gold-standard methodology + SLO scenarios (Conversational/Interactive)"
+        },
+        {
+          "title": "Bench360: Benchmarking Local LLM Inference",
+          "url": "https://arxiv.org/abs/2511.16682",
+          "reason": "local/on-device (incl. Apple Silicon) benchmarking methodology"
+        },
+        {
+          "title": "Systemic Measurement Bias in Production LLM Inference Benchmarks",
+          "url": "https://arxiv.org/html/2605.24217",
+          "reason": "pitfalls to avoid for credible numbers"
         }
       ],
       "primary_resource": {
@@ -949,11 +960,13 @@
       "why_it_matters": "A concrete 'beat the production system in this regime, here is the number, here is why' result is the sentence that gets the interview. Depth on one optimization — not a pile of half-built ones — is the anti-toy signal.",
       "concepts": [
         "data-driven optimization selection",
+        "FP8 / FP8 KV cache",
         "KV quantization (KIVI)",
         "unified-memory KV offload (FlexGen, Apple Silicon)",
-        "KV eviction (H2O / StreamingLLM)",
-        "speculative decoding (EAGLE)",
-        "prefix/radix cache",
+        "automatic prefix caching / RadixAttention",
+        "speculative decoding (EAGLE-3)",
+        "CUDA graphs (piecewise/breakable)",
+        "delegated production kernels (FlashAttention-3 / FlashInfer)",
         "quality-preserving regime win"
       ],
       "build_it": "Pick the optimization from the menu using the Week-8 baseline: attack the dimension where you lose most in the target regime.",
@@ -987,7 +1000,7 @@
       ],
       "objective": "Choose one optimization based on the Week-8 baseline (attack the dimension you lose on), implement it on the engine, preserve quality (parity or a measured bounded delta), and re-run the benchmark to show a reproducible regime win.",
       "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, the seeded traces, and the running report; production baselines for the benchmark module.",
-      "architecture_config": "target regime (from W7-8): Apple Silicon, memory-constrained (16GB), low-to-moderate concurrency\nchoose ONE (data-driven from the baseline gap):\n  - KV quantization (KIVI 2-bit): ~4x KV in fixed memory -> more concurrency / longer context than baselines [memory-bound]\n  - unified-memory KV offload (FlexGen-style on Apple unified memory, no PCIe penalty): larger effective KV [memory-bound, Apple-native]\n  - KV eviction / attention sinks (H2O / StreamingLLM): bounded KV for long/streaming [long-context]\n  - speculative decoding (EAGLE / self-speculative): single-stream latency win where vLLM spec-decode is unavailable [latency-bound]\n  - prefix/radix cache (SGLang RadixAttention): shared-prefix reuse [agent / shared-prompt workloads]\nwin condition: a reproducible metric beating the production baseline in the target regime, quality preserved\noptional stretch: a second optimization as an extra ablation row, or one hand-written CUDA/Metal kernel\n",
+      "architecture_config": "target regime (from W7-8): Apple Silicon, memory-constrained (16GB), low-to-moderate concurrency\nchoose ONE (data-driven from the baseline gap) — all are production-current SOTA:\n  - FP8 / FP8 KV cache: production-standard quantization; ~2x KV capacity -> more concurrency / longer context [memory-bound]\n  - KV quantization (KIVI 2-bit): ~4x KV in fixed memory [memory-bound]\n  - unified-memory KV offload (FlexGen-style on Apple unified memory, no PCIe penalty) [memory-bound, Apple-native]\n  - automatic prefix caching / RadixAttention: cross-request shared-prefix reuse (up to 6.4x on RAG/agent/few-shot) [shared-prompt workloads]\n  - speculative decoding (EAGLE-3, current SOTA): single-stream latency, 2-5x at low concurrency [latency-bound]\n  - CUDA graphs (piecewise/breakable): cut per-iteration decode CPU overhead (production-standard in vLLM/SGLang) [overhead-bound]\n  - KV eviction / attention sinks (H2O / StreamingLLM): bounded KV for long/streaming [long-context]\ndelegated production kernels: FlashAttention-3 / FlashInfer (FA-4 on Blackwell) — USE, do not reimplement; one hand-written kernel is an optional stretch\nwin condition: a reproducible metric beating the production baseline in the target regime, quality preserved\n",
       "abstraction_level": "Own the optimization implementation and the head-to-head measurement in the target regime. Delegate kernels to PyTorch/FlashInfer (one hand-written kernel is an optional stretch). Quality must be preserved.",
       "implementation_steps": [
         "Pick the optimization from the menu using the Week-8 baseline: attack the dimension where you lose most in the target regime.",
@@ -1011,6 +1024,11 @@
       ],
       "reference_implementations": [
         {
+          "title": "EAGLE-3",
+          "url": "https://arxiv.org/abs/2503.01840",
+          "note": "current SOTA speculative decoding (training-time test scaling)"
+        },
+        {
           "title": "KIVI (2-bit KV cache)",
           "url": "https://arxiv.org/abs/2402.02750",
           "note": "KV quantization for more concurrency / longer context"
@@ -1021,24 +1039,19 @@
           "note": "offloading for memory-constrained serving (unified-memory analog)"
         },
         {
-          "title": "H2O (Heavy-Hitter Oracle)",
-          "url": "https://arxiv.org/abs/2306.14048",
-          "note": "KV eviction"
-        },
-        {
-          "title": "StreamingLLM (attention sinks)",
+          "title": "H2O / StreamingLLM",
           "url": "https://arxiv.org/abs/2309.17453",
-          "note": "bounded KV for streaming"
-        },
-        {
-          "title": "EAGLE-2",
-          "url": "https://arxiv.org/abs/2406.16858",
-          "note": "speculative decoding for single-stream latency"
+          "note": "KV eviction / attention sinks for bounded long-context KV"
         },
         {
           "title": "SGLang RadixAttention",
           "url": "https://github.com/sgl-project/sglang",
-          "note": "prefix-cache reuse for shared-prompt workloads"
+          "note": "automatic prefix caching for shared-prompt workloads"
+        },
+        {
+          "title": "FlashInfer",
+          "url": "https://github.com/flashinfer-ai/flashinfer",
+          "note": "the production attention/sampling kernels you delegate to"
         }
       ],
       "further_reading": [
@@ -1673,7 +1686,7 @@
         "Weeks 7-8: Chunked prefill (Sarathi-Serve) + full cross-engine benchmark — A Sarathi-Serve chunked-prefill scheduler and a reproducible cross-engine, cross-device benchmark that names the target regime.",
         "Weeks 9-11: Outperformance optimization (3 weeks, data-driven) — One paper-backed optimization (chosen data-driven) that reproducibly outperforms the production baseline in the defended regime, quality preserved.",
         "Week 12: Paper-like technical report + portfolio release — A paper-like technical report with a reproducible ablation ladder and the regime-specific outperformance result, plus the published repo and README.",
-        "Optional extension (only if ahead of schedule): a second optimization as another ablation row, a hand-written CUDA/Metal kernel, a prefix/radix cache for agent workloads, or a prefill/decode disaggregation spike."
+        "Optional extension (only if ahead): a second optimization as another ablation row; a hand-written CUDA/Metal kernel; or support a hybrid-attention model (Qwen3.5: constant-memory linear-attention state + paged KV for the full-attention layers) — a 2026 production trend."
       ],
       "problem_index": [
         "Weeks 1-2 MVP engine + benchmark harness (Mac-first)",
@@ -1723,6 +1736,16 @@
           "title": "Outcome School — AI & Machine Learning",
           "url": "https://outcomeschool.com/program/ai-and-machine-learning",
           "use": "curriculum reference: LLM internals, vLLM serving, inference-platform system design"
+        },
+        {
+          "title": "MLPerf Inference (methodology + SLO scenarios)",
+          "url": "https://mlcommons.org/2025/09/small-llm-inference-5-1/",
+          "use": "the gold-standard benchmark methodology to mirror"
+        },
+        {
+          "title": "NVIDIA GenAI-Perf / AIPerf",
+          "url": "https://docs.nvidia.com/nim/benchmarking/llm/latest/metrics.html",
+          "use": "drive every OpenAI-compatible engine with one standard benchmark tool"
         }
       ],
       "owned_vs_delegated": {
@@ -1752,7 +1775,8 @@
         "Every mechanism is benchmarked incrementally (vs the previous stage and llama.cpp) — an attributable ablation ladder, not one end-of-project number.",
         "A reproducible cross-engine, cross-device benchmark reports the complete engine vs vLLM, SGLang, and llama.cpp from checked-in configs.",
         "The optimization is chosen data-driven from the Week-8 baseline and yields a reproducible win over the production baseline in the defended regime, quality preserved.",
-        "The deliverable is a paper-like technical report (abstract, design, ablation ladder, regime win, related work, limitations, reproducibility)."
+        "The deliverable is a paper-like technical report (abstract, design, ablation ladder, regime win, related work, limitations, reproducibility).",
+        "Benchmarks use a standard industry harness (vLLM bench serve / GenAI-Perf) over OpenAI-compatible APIs against vLLM, SGLang, and llama.cpp, with ShareGPT + Poisson request-rate sweeps and MLPerf SLO scenarios."
       ]
     }
   ],
@@ -2189,7 +2213,7 @@
     }
   ],
   "compute_policy": {
-    "canonical_environment": "MacBook Pro M4 16GB is the primary dev + Apple-Silicon benchmark device (MPS/Metal, small model). The full cross-engine benchmark runs on a short-lived rented CUDA GPU (your engine + vLLM + SGLang) at Week 8 and after the optimization. llama.cpp is benchmarked on both the M4 and CUDA. Cloud is used only when there is a mature engine worth comparing.",
+    "canonical_environment": "MacBook Pro M4 16GB is the primary dev + Apple-Silicon benchmark device (MPS/Metal). Primary local model: Qwen3-0.6B — a standard dense decoder (GQA + RoPE -> standard KV cache), the right architecture for paged-KV / batching / chunked-prefill work, with room on 16GB for KV and concurrency experiments; step up to Qwen3-1.7B to stress throughput. Alternatives (all dense, all supported by vLLM>=0.8.4 / SGLang>=0.4.6 / llama.cpp): Qwen2.5-0.5B/1.5B, Llama-3.2-1B/3B. Cloud (CUDA, side/optional): the SAME model for apples-to-apples, plus optionally Qwen3-4B or Llama-3.2-3B to stress throughput where the M4 cannot. NOT Qwen3.5-0.8B as the primary: it is a hybrid Gated-DeltaNet (linear attention) + Gated-Attention model whose linear layers carry a constant-size recurrent state, not a growing KV cache, which breaks the paged-KV premise. Supporting a hybrid-attention model is an optional extension.",
     "cost_ceiling_usd": 150,
     "expected_total_spend": "Development is Mac-local and free. Paid compute is the benchmark legs on a rented 24GB CUDA GPU (~USD0.27-0.69/hour); a handful of benchmark hours imply roughly USD15-40. Plan USD20-50 expected, USD150 hard ceiling.",
     "per_run_gate": "Cloud runs only after the Mac-local module passes its parity gate; each benchmark run is scripted from checked-in configs and run cards so it is reproducible and short."
