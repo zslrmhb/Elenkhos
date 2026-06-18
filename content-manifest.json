@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-06-16T19:00:00Z",
+  "generated_at": "2026-06-16T20:30:00Z",
   "sources": [
     {
       "path": "data/roadmap/roadmap.yaml",
-      "generated_at": "2026-06-16T19:00:00Z",
-      "checksum": "614814fdec937d369ef580eca9370a992525bdbfee69636bcbbd62b73123472c"
+      "generated_at": "2026-06-16T20:30:00Z",
+      "checksum": "e8fedf28e17cc9b90285d781994ca0e6ec5f38683d7da52e1465171f52b72902"
     },
     {
       "path": "data/keyword-analysis/priority-matrix.json",
@@ -24,7 +24,7 @@
   ],
   "freshness": {
     "status": "current",
-    "roadmap_generated_at": "2026-06-16T19:00:00Z",
+    "roadmap_generated_at": "2026-06-16T20:30:00Z",
     "market_generated_at": "2026-06-12T20:00:00Z",
     "xiaohongshu_generated_at": "2026-06-12T20:00:00Z",
     "reason": "Dual-source opportunity-roi-v3 run 2026-06-12. Xiaohongshu corpus collected 2026-06-12 (56 posts/50 authors); re-check market+community Aug-Oct 2026.",
@@ -646,6 +646,11 @@
           "title": "Karpathy llama2.c",
           "url": "https://github.com/karpathy/llama2.c",
           "note": "dependency-light, inspectable single-file inference loop"
+        },
+        {
+          "title": "tiny-llm (skyzh)",
+          "url": "https://skyzh.github.io/tiny-llm/",
+          "note": "a from-scratch LLM-serving course in MLX on Mac (Qwen3): attention, KV cache, quantization, and batching — a guided companion for building this engine"
         }
       ],
       "further_reading": [
@@ -751,6 +756,11 @@
           "title": "nano-vllm",
           "url": "https://github.com/GeeeekExplorer/nano-vllm",
           "note": "compact paged-cache + block-table reference in Python"
+        },
+        {
+          "title": "tiny-llm (skyzh)",
+          "url": "https://skyzh.github.io/tiny-llm/",
+          "note": "a from-scratch LLM-serving course in MLX on Mac (Qwen3): attention, KV cache, quantization, and batching — a guided companion for building this engine"
         }
       ],
       "further_reading": [
@@ -974,6 +984,11 @@
           "title": "vLLM chunked prefill",
           "url": "https://docs.vllm.ai/en/latest/",
           "note": "the production default this reproduces"
+        },
+        {
+          "title": "mini-sglang",
+          "url": "https://github.com/sgl-project/mini-sglang",
+          "note": "chunked prefill + overlap scheduling in a minimal SGLang reimplementation"
         }
       ],
       "further_reading": [
@@ -997,6 +1012,11 @@
           "title": "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve",
           "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
           "reason": "chunked prefill and stall-free batching"
+        },
+        {
+          "title": "mini-sglang design walkthrough (LMSYS blog)",
+          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
+          "reason": "RadixAttention, overlap scheduling, and chunked prefill explained in ~5k lines of Python"
         }
       ],
       "primary_resource": {
@@ -1970,6 +1990,21 @@
           "title": "Sarathi-Serve (OSDI'24)",
           "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
           "use": "chunked prefill and stall-free batching"
+        },
+        {
+          "title": "tiny-llm repo (skyzh)",
+          "url": "https://github.com/skyzh/tiny-llm",
+          "use": "from-scratch serving-engine course (MLX, Mac, Qwen3) paralleling this project"
+        },
+        {
+          "title": "mini-sglang design walkthrough (LMSYS blog)",
+          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
+          "use": "RadixAttention, overlap scheduling, and chunked prefill explained in ~5k lines of Python"
+        },
+        {
+          "title": "Outcome School — AI & Machine Learning",
+          "url": "https://outcomeschool.com/program/ai-and-machine-learning",
+          "use": "curriculum reference: LLM internals, vLLM serving, and 'Design an LLM Inference Platform' system design"
         }
       ],
       "design_principles": [
