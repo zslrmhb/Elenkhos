@@ -225,8 +225,8 @@
     return ordered;
   }
   function renderLessons(main) {
-    main.appendChild(el("p",{className:"lede",text:"Full lesson contracts in build order. Each is a CS336-style assignment writeup: Problem · Objective · Exact inputs · Architecture/config · Implementation steps · Starter files & interfaces · Tests & measurements · Exercises · Proof · Exit gate · primary resource · official API docs · papers."}));
-    main.appendChild(el("p",{className:"path-meta",text:"Operating lens: minimal and hackable first (Karpathy), reference → optimized with parity gates (llm.c / llama2.c), implement-and-explain (CS336), and Build → Use → Reflect (TinyTorch). Lessons follow the canonical build sequence; compute and storage limits come from the roadmap manifest."}));
+    main.appendChild(el("p",{className:"lede",text:"Full module contracts in build order. Each is a complete engineering writeup: Problem · Objective · Exact inputs · Architecture/config · Implementation steps · Starter files & interfaces · Tests & measurements · Exercises · Proof · Exit gate · primary resource · references · papers."}));
+    main.appendChild(el("p",{className:"path-meta",text:"Operating lens: minimal and hackable first (nano-vllm / tiny-llm), reference → optimized with parity gates against a single-request oracle, implement named papers and explain them (Orca, Sarathi-Serve), and measure against production (vLLM, SGLang, llama.cpp). Modules follow the canonical build sequence; compute limits come from the roadmap manifest."}));
     if(M.compute_policy){
       var cp=M.compute_policy;
       var local=el("section",{"aria-labelledby":"local-first-contract"});
@@ -397,7 +397,7 @@
     var primary=M.projects.filter(function(p){return p.decision==="active_primary";})[0];
     var sec=el("section",{"aria-labelledby":"project-spec-h"});
     sec.appendChild(el("h2",{id:"project-spec-h",text:"Primary project specification"}));
-    sec.appendChild(el("p",{className:"lede",text:"A CS336-style assignment contract with frozen model, data, training, serving, experiment, and acceptance decisions."}));
+    sec.appendChild(el("p",{className:"lede",text:"The exact engine, scheduler, paged KV cache, chunked prefill, multi-device benchmark, optimization, and acceptance contract for the from-scratch inference engine."}));
 
     if(primary){
       var card=el("article",{className:"card detail-panel","data-canonical-id":primary.project_id});

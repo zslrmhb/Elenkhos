@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-06-16T20:30:00Z",
+  "generated_at": "2026-06-16T22:00:00Z",
   "sources": [
     {
       "path": "data/roadmap/roadmap.yaml",
-      "generated_at": "2026-06-16T20:30:00Z",
-      "checksum": "e8fedf28e17cc9b90285d781994ca0e6ec5f38683d7da52e1465171f52b72902"
+      "generated_at": "2026-06-16T22:00:00Z",
+      "checksum": "74a18f7c66a10823e3f60d8ec8730223df9feaa7feae12dc08f2cdd45bcc1773"
     },
     {
       "path": "data/keyword-analysis/priority-matrix.json",
@@ -24,7 +24,7 @@
   ],
   "freshness": {
     "status": "current",
-    "roadmap_generated_at": "2026-06-16T20:30:00Z",
+    "roadmap_generated_at": "2026-06-16T22:00:00Z",
     "market_generated_at": "2026-06-12T20:00:00Z",
     "xiaohongshu_generated_at": "2026-06-12T20:00:00Z",
     "reason": "Dual-source opportunity-roi-v3 run 2026-06-12. Xiaohongshu corpus collected 2026-06-12 (56 posts/50 authors); re-check market+community Aug-Oct 2026.",
@@ -34,12 +34,11 @@
   },
   "planning_profile": {
     "target_roles": [
-      "machine_learning_engineer",
-      "ai_software_engineer",
       "ml_systems_engineer",
       "ai_infrastructure_engineer",
-      "software_engineer",
       "backend_distributed_systems_engineer",
+      "machine_learning_engineer",
+      "ai_software_engineer",
       "research_engineer"
     ],
     "target_seniority": [
@@ -49,12 +48,12 @@
     ],
     "deadline": "2026-09-11",
     "assumptions": [
-      "Single focused project: ElenkhosServe, a from-scratch LLM inference engine, taken deep on the scheduling stack — Orca-style continuous batching and Sarathi-Serve chunked prefill — rather than a broad train+serve capstone.",
-      "Inference systems only. Post-training, distillation, and pretraining are explicitly out of scope; the proof is a serving engine and a measured latency-throughput study, not a model.",
-      "Execution window Jun 22 - Sep 13, 2026, 20 h/week, ~17 committed + ~3 reserve, ~174 committed hours with slack for debugging, reruns, and applications.",
-      "Hardware: MacBook Pro M4 16GB is the primary dev box (MPS + a small model for functional correctness); a short-lived rented CUDA GPU is used only for the head-to-head benchmark against vLLM.",
-      "Depth over breadth: implement two named papers end to end (Orca, OSDI'22; Sarathi-Serve, OSDI'24) on one stack, ablate them, and characterize the Pareto frontier.",
-      "Fall interview gates (DSA, system design) are deferred to after the build window."
+      "Single focused project: a from-scratch LLM inference engine, taken deep on the scheduling stack and then benchmarked, across devices, against the real production systems (vLLM, SGLang, llama.cpp).",
+      "Inference systems only. No training, distillation, or interview-gate track — depth on one engine.",
+      "Outperformance thesis: do not try to beat vLLM/SGLang on datacenter GPUs at scale. Beat them in a specific, defended regime — Apple Silicon, memory-constrained (16GB), and low-to-moderate concurrency — where general-purpose datacenter engines are weak or absent.",
+      "Multi-device benchmark: Apple Silicon M4 16GB (MPS/Metal) and a short-lived rented CUDA GPU; the same engine, the same seeded traces, the same metrics on both.",
+      "Execution window Jun 22 - Sep 13, 2026, 20 h/week, ~17 committed + ~3 reserve.",
+      "Depth over breadth: implement named papers (Orca, Sarathi-Serve) plus one outperformance optimization from a paper, all measured end to end."
     ]
   },
   "capacity": {
@@ -66,76 +65,76 @@
   },
   "pareto_niche": {
     "selected_candidate_id": "niche-inference-scheduler",
-    "hedge_candidate_id": "niche-kv-memory",
+    "hedge_candidate_id": "niche-edge-perf",
     "candidates": [
       {
         "candidate_id": "niche-inference-scheduler",
-        "label": "LLM inference scheduling & serving-systems engineer",
-        "thesis": "Build ElenkhosServe, a from-scratch LLM inference engine, and go deep on the scheduling stack that defines modern serving throughput: implement Orca's iteration-level continuous batching and Sarathi-Serve's chunked prefill on a paged KV cache, add SLO-aware admission control, and characterize the latency-throughput Pareto frontier — benchmarked head-to-head against vLLM. One focused systems project, two named papers implemented and ablated, measured end to end.",
+        "label": "LLM inference engine & serving-systems engineer",
+        "thesis": "Build a from-scratch LLM inference engine — paged KV cache, Orca continuous batching, Sarathi-Serve chunked prefill, SLO-aware admission — then benchmark it across devices (cloud CUDA and Apple Silicon) against vLLM, SGLang, and llama.cpp. Finally, implement one optimization from a paper and outperform the production baseline in a defended regime: Apple Silicon, memory-constrained, and low-to-moderate concurrency. One focused project, named papers implemented, measured against the real thing, with a concrete win where it counts.",
         "skill_axes": [
           "LLM inference internals: paged KV cache, continuous batching, chunked prefill",
-          "Scheduling & admission control under SLOs (latency-throughput tradeoff)",
-          "Systems measurement: reproducible benchmarks, p99 TTFT/TBT, goodput, memory"
+          "Cross-device benchmarking vs vLLM / SGLang / llama.cpp (CUDA + Apple Silicon)",
+          "Targeted optimization (KV quantization/offload, speculative decoding) for outperformance in a regime"
         ],
         "supported_roles": [
           "ml_systems_engineer",
           "ai_infrastructure_engineer",
           "backend_distributed_systems_engineer",
-          "software_engineer",
-          "machine_learning_engineer"
+          "machine_learning_engineer",
+          "ai_software_engineer"
         ],
         "same_person_problem_set": [
-          "Implement PagedAttention-style block management and prove parity with a contiguous reference",
-          "Implement Orca continuous batching and Sarathi-Serve chunked prefill, then ablate each",
-          "Characterize the latency-throughput Pareto frontier and defend an SLO-aware admission policy"
+          "Implement PagedAttention, Orca batching, and Sarathi-Serve chunked prefill and prove parity with a reference",
+          "Benchmark the engine against vLLM, SGLang, and llama.cpp on the same traces across CUDA and Apple Silicon",
+          "Implement a paper-backed optimization and beat the production baseline in a specific, defended regime"
         ],
         "score_components": {
           "existing_advantage": 0.7,
           "same_person_synergy": 0.85,
           "problem_density": 0.9,
-          "elbow_room": 0.6,
-          "defensibility": 0.75,
+          "elbow_room": 0.65,
+          "defensibility": 0.8,
           "proofability": 0.95
         },
         "transition_cost_penalty": 6,
-        "pareto_niche_score": 72.0,
-        "proof_artifact": "ElenkhosServe: a from-scratch inference engine with paged KV cache, continuous batching (Orca), and chunked prefill (Sarathi-Serve), an SLO-aware scheduler, and a reproducible benchmark report vs vLLM and llama.cpp.",
+        "pareto_niche_score": 74.0,
+        "proof_artifact": "A from-scratch inference engine with paged KV, continuous batching, and chunked prefill; a reproducible cross-device benchmark vs vLLM, SGLang, and llama.cpp; and one optimization that outperforms the production baseline in a defended regime.",
         "falsification_conditions": [
           "Inference-systems roles stop rewarding from-scratch engine work when re-checked Aug-Oct 2026",
-          "The engine cannot reach a defensible fraction of vLLM throughput on a shared benchmark",
-          "Continuous batching and chunked prefill cannot be shown to move the latency-throughput frontier with reproducible numbers"
+          "The engine cannot reach a defensible fraction of vLLM/SGLang throughput on CUDA, or beat llama.cpp on Apple Silicon",
+          "No paper-backed optimization yields a reproducible win in any defended regime"
         ],
         "decision": "selected"
       },
       {
-        "candidate_id": "niche-kv-memory",
-        "label": "KV-cache / memory-systems engineer",
-        "thesis": "Same engine, but center the depth on KV-cache memory: paged allocation plus a fancy eviction/quantization policy (StreamingLLM attention sinks, H2O heavy-hitters, or KIVI 2-bit KV). Strong fit for a 16GB box; narrower than the full scheduler story.",
+        "candidate_id": "niche-edge-perf",
+        "label": "On-device / Apple-Silicon inference engineer",
+        "thesis": "Same engine, but center the whole story on Apple Silicon: exploit unified memory and Metal to beat llama.cpp on concurrency and long-context in 16GB. Narrower, but a very clean hardware-advantage story.",
         "skill_axes": [
-          "paged KV cache",
-          "KV eviction/quantization",
-          "memory-quality tradeoff"
+          "Apple Silicon / Metal / unified memory",
+          "on-device KV management",
+          "edge serving latency"
         ],
         "supported_roles": [
           "ml_systems_engineer",
           "ai_infrastructure_engineer"
         ],
         "same_person_problem_set": [
-          "Implement a paged KV cache and a published eviction/quant policy, then measure memory vs quality"
+          "Beat llama.cpp on the M4 with continuous batching + quantized/offloaded KV"
         ],
         "score_components": {
-          "existing_advantage": 0.65,
-          "same_person_synergy": 0.6,
-          "problem_density": 0.8,
-          "elbow_room": 0.6,
-          "defensibility": 0.6,
+          "existing_advantage": 0.7,
+          "same_person_synergy": 0.7,
+          "problem_density": 0.75,
+          "elbow_room": 0.7,
+          "defensibility": 0.7,
           "proofability": 0.9
         },
         "transition_cost_penalty": 8,
-        "pareto_niche_score": 60.0,
-        "proof_artifact": "ElenkhosServe with a paged KV cache and one published eviction/quantization policy plus a memory-quality study.",
+        "pareto_niche_score": 64.0,
+        "proof_artifact": "An Apple-Silicon-native engine that beats llama.cpp on concurrency and long-context in 16GB.",
         "falsification_conditions": [
-          "KV-optimization alone reads as too narrow for the target roles"
+          "On-device-only reads as too narrow for the broader systems roles"
         ],
         "decision": "hedge"
       }
@@ -165,10 +164,8 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-dsa",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     },
     {
@@ -194,10 +191,8 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-dsa",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     },
     {
@@ -219,12 +214,10 @@
       ],
       "unit_ids": [
         "unit-w1-2-engine",
-        "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     },
     {
@@ -250,10 +243,8 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-dsa",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     },
     {
@@ -279,9 +270,8 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     },
     {
@@ -307,10 +297,8 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-dsa",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     },
     {
@@ -334,42 +322,12 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ]
     }
   ],
   "workflow_stages": [
-    {
-      "stage_id": "stage-data",
-      "name": "Data",
-      "description": "Datasets, golden sets, feature pipelines.",
-      "role_ids": [
-        "ai_infrastructure_engineer",
-        "machine_learning_engineer"
-      ],
-      "unit_ids": [
-
-      ],
-      "project_ids": [
-
-      ]
-    },
-    {
-      "stage_id": "stage-training",
-      "name": "Training",
-      "description": "Training & finetuning, distributed.",
-      "role_ids": [
-        "ml_systems_engineer",
-        "research_engineer"
-      ],
-      "unit_ids": [
-
-      ],
-      "project_ids": [
-
-      ]
-    },
     {
       "stage_id": "stage-evaluation",
       "name": "Evaluation",
@@ -380,21 +338,7 @@
       ],
       "unit_ids": [
         "unit-w1-2-engine",
-        "unit-w11-12-release"
-      ],
-      "project_ids": [
-        "proj-two-project-portfolio"
-      ]
-    },
-    {
-      "stage_id": "stage-quantization",
-      "name": "Compression",
-      "description": "Quantization & model compression for the budget.",
-      "role_ids": [
-        "ml_systems_engineer"
-      ],
-      "unit_ids": [
-
+        "unit-w9-10-benchmark"
       ],
       "project_ids": [
         "proj-two-project-portfolio"
@@ -412,8 +356,7 @@
         "unit-w1-2-engine",
         "unit-w3-4-kv",
         "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo"
+        "unit-w7-8-prefill"
       ],
       "project_ids": [
         "proj-two-project-portfolio"
@@ -428,8 +371,8 @@
         "backend_distributed_systems_engineer"
       ],
       "unit_ids": [
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w5-6-batching",
+        "unit-w9-10-benchmark"
       ],
       "project_ids": [
         "proj-two-project-portfolio"
@@ -443,34 +386,21 @@
         "ml_systems_engineer"
       ],
       "unit_ids": [
-        "unit-w11-12-release"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ],
       "project_ids": [
         "proj-two-project-portfolio"
-      ]
-    },
-    {
-      "stage_id": "stage-product",
-      "name": "Product",
-      "description": "User-facing AI features, agents.",
-      "role_ids": [
-        "ai_software_engineer"
-      ],
-      "unit_ids": [
-
-      ],
-      "project_ids": [
-
       ]
     }
   ],
   "phases": [
     {
       "phase_id": "phase-inference-scheduler",
-      "title": "ElenkhosServe · 12-week LLM inference scheduler",
-      "outcome": "A from-scratch LLM inference engine taken deep on the scheduling stack: paged KV cache, Orca continuous batching, Sarathi-Serve chunked prefill, SLO-aware admission, and a reproducible benchmark vs vLLM.",
-      "description": "One focused inference-systems project over 12 weeks: minimal engine -> paged KV cache -> continuous batching (Orca) -> chunked prefill (Sarathi-Serve) -> latency-throughput Pareto + SLO admission -> benchmark vs vLLM and portfolio release.",
-      "milestone": "Two named papers (Orca, Sarathi-Serve) implemented and ablated on one engine, with a measured latency-throughput Pareto frontier and a head-to-head vLLM benchmark.",
+      "title": "From-scratch inference engine · 12 weeks",
+      "outcome": "A from-scratch LLM inference engine — paged KV cache, Orca continuous batching, Sarathi-Serve chunked prefill, SLO-aware admission — benchmarked across devices against vLLM, SGLang, and llama.cpp, with one optimization that outperforms the production baseline in a defended regime.",
+      "description": "Minimal engine + cross-device harness -> paged KV cache -> continuous batching (Orca) + admission -> chunked prefill (Sarathi-Serve) + Pareto -> cross-device benchmark vs vLLM/SGLang/llama.cpp -> outperformance optimization + release.",
+      "milestone": "Named papers implemented, a reproducible multi-engine multi-device benchmark, and one paper-backed optimization that beats the production baseline in a defended regime.",
       "section_ids": [
         "section-w1-2",
         "section-w3-4",
@@ -479,28 +409,18 @@
         "section-w9-10",
         "section-w11-12"
       ]
-    },
-    {
-      "phase_id": "phase-interview-gates",
-      "title": "Fall · Interview gates",
-      "outcome": "Maintain coding and system-design readiness after the project ships.",
-      "description": "A bounded maintenance lane, not a second project.",
-      "milestone": "80%-in-time coding screen plus scored design one-pagers.",
-      "section_ids": [
-        "section-gates"
-      ]
     }
   ],
   "sections": [
     {
       "section_id": "section-w1-2",
       "phase_id": "phase-inference-scheduler",
-      "title": "Weeks 1-2 · Minimal inference engine + reference oracle",
+      "title": "Weeks 1-2 · Minimal engine + multi-device benchmark harness",
       "lesson_ids": [
         "lesson-w1-2-engine"
       ],
-      "integration_checkpoint": "The streaming API serves the small model; the oracle fixture is frozen; the harness reports baseline throughput, TTFT, TBT, p99, and peak memory reproducibly from seeded traces.",
-      "name": "Weeks 1-2 · Minimal inference engine + reference oracle"
+      "integration_checkpoint": "The streaming API serves the model on both MPS and CUDA; the oracle is frozen; the harness reports baseline metrics reproducibly on both devices.",
+      "name": "Weeks 1-2 · Minimal engine + multi-device benchmark harness"
     },
     {
       "section_id": "section-w3-4",
@@ -509,118 +429,106 @@
       "lesson_ids": [
         "lesson-w3-4-kv"
       ],
-      "integration_checkpoint": "Paged decode matches the oracle token-for-token; the memory study shows reduced fragmentation and higher max concurrency at fixed memory; block-size tradeoff is documented.",
+      "integration_checkpoint": "Paged decode matches the oracle; the memory study shows reduced fragmentation and higher max concurrency at fixed memory on both devices.",
       "name": "Weeks 3-4 · Paged KV cache (PagedAttention)"
     },
     {
       "section_id": "section-w5-6",
       "phase_id": "phase-inference-scheduler",
-      "title": "Weeks 5-6 · Continuous batching (Orca)",
+      "title": "Weeks 5-6 · Continuous batching (Orca) + admission control",
       "lesson_ids": [
         "lesson-w5-6-batching"
       ],
-      "integration_checkpoint": "Continuous batching matches the oracle per sequence and shows a clear throughput/utilization gain over static batching on the seeded traces.",
-      "name": "Weeks 5-6 · Continuous batching (Orca)"
+      "integration_checkpoint": "Continuous batching matches the oracle per sequence, shows a throughput gain over static batching on both devices, and under overload returns 429 with bounded p99 and no leaked KV.",
+      "name": "Weeks 5-6 · Continuous batching (Orca) + admission control"
     },
     {
       "section_id": "section-w7-8",
       "phase_id": "phase-inference-scheduler",
-      "title": "Weeks 7-8 · Chunked prefill (Sarathi-Serve)",
+      "title": "Weeks 7-8 · Chunked prefill (Sarathi-Serve) + latency-throughput Pareto",
       "lesson_ids": [
         "lesson-w7-8-prefill"
       ],
-      "integration_checkpoint": "Chunked prefill matches the oracle; the TTFT/TBT sweep shows reduced decode stalls and a clear, defended token-budget default.",
-      "name": "Weeks 7-8 · Chunked prefill (Sarathi-Serve)"
+      "integration_checkpoint": "Chunked prefill matches the oracle; the Pareto frontier is plotted per device with an identified knee and a stated best-served regime.",
+      "name": "Weeks 7-8 · Chunked prefill (Sarathi-Serve) + latency-throughput Pareto"
     },
     {
       "section_id": "section-w9-10",
       "phase_id": "phase-inference-scheduler",
-      "title": "Weeks 9-10 · Latency-throughput Pareto + SLO-aware admission",
+      "title": "Weeks 9-10 · Cross-device benchmark vs vLLM, SGLang, and llama.cpp",
       "lesson_ids": [
-        "lesson-w9-10-slo"
+        "lesson-w9-10-benchmark"
       ],
-      "integration_checkpoint": "The Pareto frontier is plotted with an identified knee; under overload the service returns 429 and keeps p99 bounded with no leaked KV; the SLO-aware policy beats FIFO on goodput.",
-      "name": "Weeks 9-10 · Latency-throughput Pareto + SLO-aware admission"
+      "integration_checkpoint": "A reproducible comparison matrix reports your engine vs vLLM, SGLang, and llama.cpp across CUDA and Apple Silicon, from checked-in configs, with a defended target regime for the optimization.",
+      "name": "Weeks 9-10 · Cross-device benchmark vs vLLM, SGLang, and llama.cpp"
     },
     {
       "section_id": "section-w11-12",
       "phase_id": "phase-inference-scheduler",
-      "title": "Weeks 11-12 · Benchmark vs vLLM, hardening & portfolio release",
+      "title": "Weeks 11-12 · Outperformance optimization + portfolio release",
       "lesson_ids": [
-        "lesson-w11-12-release"
+        "lesson-w11-12-optimize"
       ],
-      "integration_checkpoint": "A reproducible benchmark reports all three engines on shared traces from checked-in configs; the service handles cancellation/timeouts/shutdown cleanly; the report and README tell the end-to-end story.",
-      "name": "Weeks 11-12 · Benchmark vs vLLM, hardening & portfolio release"
-    },
-    {
-      "section_id": "section-gates",
-      "phase_id": "phase-interview-gates",
-      "title": "Coding and system design",
-      "lesson_ids": [
-        "lesson-dsa",
-        "lesson-sysdesign"
-      ],
-      "integration_checkpoint": "Coding screens land in time; system-design one-pagers are scored.",
-      "name": "Coding and system design"
+      "integration_checkpoint": "The optimization preserves quality and produces a reproducible win over the production baseline in the defended regime; the report and README tell the end-to-end story from checked-in configs.",
+      "name": "Weeks 11-12 · Outperformance optimization + portfolio release"
     }
   ],
   "lessons": [
     {
       "lesson_id": "lesson-w1-2-engine",
       "unit_id": "unit-w1-2-engine",
-      "title": "Weeks 1-2 · Minimal inference engine + reference oracle",
+      "title": "Weeks 1-2 · Minimal engine + multi-device benchmark harness",
       "phase_id": "phase-inference-scheduler",
       "section_id": "section-w1-2",
       "status": "must_do_now",
       "estimated_hours": 28,
-      "problem": "Before any optimization you need a correct, instrumented baseline: a single-request decode loop you fully understand, a deterministic oracle to check every later optimization against, and a benchmark harness that measures what serving teams measure.",
-      "why_it_matters": "Every later module is judged against this. A clean reference + harness is the part interviewers respect most, and the only thing that makes 'I made it faster' a credible claim.",
+      "problem": "Before any optimization you need a correct, instrumented baseline that runs on every target device: a single-request decode loop, a deterministic oracle to check optimizations against, and one benchmark harness that measures the same metrics on Apple Silicon and on a cloud CUDA GPU.",
+      "why_it_matters": "Every later module — and the whole outperformance claim — is judged against this harness. A cross-device, reproducible measurement rig is the part that separates a real systems project from a demo.",
       "concepts": [
         "autoregressive decode loop",
-        "sampling & stop conditions",
         "OpenAI-compatible streaming",
-        "deterministic oracle & parity testing",
-        "serving metrics: TTFT, TBT, p99, goodput, memory"
+        "deterministic oracle & parity",
+        "cross-device measurement (MPS/CUDA)",
+        "TTFT, TBT, p99, goodput, memory"
       ],
-      "build_it": "Load a small model and implement a single-request greedy/seeded decode loop; print token IDs/text/timings.",
-      "use_it": "Drive it with the seeded traces and the benchmark harness; check parity against the oracle.",
+      "build_it": "Implement a single-request decode loop and an OpenAI-compatible streaming endpoint with sampling, stop conditions, and cancellation.",
+      "use_it": "Drive it with the seeded traces and the cross-device harness; check parity against the oracle.",
       "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
       "exercises": [
         {
           "exercise_id": "ex-w1-2-1",
           "type": "project",
-          "prompt": "Load a small model and implement a single-request greedy/seeded decode loop; print token IDs/text/timings.",
-          "completion_gate": "The streaming API serves the small model; the oracle fixture is frozen; the harness reports baseline throughput, TTFT, TBT, p99, and peak memory reproducibly from seeded traces."
+          "prompt": "Implement a single-request decode loop and an OpenAI-compatible streaming endpoint with sampling, stop conditions, and cancellation.",
+          "completion_gate": "The streaming API serves the model on both MPS and CUDA; the oracle is frozen; the harness reports baseline metrics reproducibly on both devices."
         },
         {
           "exercise_id": "ex-w1-2-2",
           "type": "coding",
-          "prompt": "Author seeded request traces (short, mixed, bursty) and record the single-request baseline numbers.",
-          "completion_gate": "Measured, reproducible, and parity-checked against the oracle."
+          "prompt": "Author seeded traces (short, mixed, bursty); record single-request baselines on Apple Silicon and on a rented CUDA GPU.",
+          "completion_gate": "Measured, reproducible, and parity-checked."
         }
       ],
       "tests_and_measurements": [
         "oracle parity",
-        "reproducible benchmark",
-        "A minimal inference engine with a streaming API, a frozen deterministic oracle, and a reproducible benchmark harness."
+        "reproducible cross-device benchmark",
+        "A minimal engine with a streaming API, a frozen oracle, and a cross-device (Apple Silicon + CUDA) benchmark harness."
       ],
-      "proof_artifact": "A minimal inference engine with a streaming API, a frozen deterministic oracle, and a reproducible benchmark harness.",
+      "proof_artifact": "A minimal engine with a streaming API, a frozen oracle, and a cross-device (Apple Silicon + CUDA) benchmark harness.",
       "mastery_gate": [
         "implement",
         "test",
         "measure",
         "explain"
       ],
-      "objective": "Build a single-request, no-batching decode loop over a small model with an OpenAI-compatible streaming API, plus a deterministic token oracle and a benchmark harness (throughput, TTFT, TBT, p99, peak memory) driven by seeded request traces.",
-      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle fixture, and the seeded request traces.",
-      "architecture_config": "engine: Python over PyTorch (MPS on the M4); model: Qwen2.5-0.5B / Llama-3.2-1B\nAPI: OpenAI-compatible /v1/completions streaming; sampling, stop conditions, cancellation\noracle: deterministic greedy/seeded path; harness: throughput, TTFT, TBT, p99, peak memory; seeded traces (short, mixed, bursty)\nlineage: nano-vllm and llama2.c studied for a dependency-light, inspectable loop\n",
-      "abstraction_level": "Own the decode loop, sampling, streaming API, the deterministic oracle, and the measurement harness. Delegate matmul/attention to PyTorch. Keep everything single-request here; batching and paging come later so each optimization can be proven against this baseline.",
+      "objective": "Build a single-request decode loop over a small model with an OpenAI-compatible streaming API; a deterministic token oracle; and one device-agnostic benchmark harness (throughput, TTFT, TBT, p99, peak memory) that runs on Apple Silicon (MPS) and cloud CUDA from the same seeded traces.",
+      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, and the seeded traces; the production baselines for benchmark modules.",
+      "architecture_config": "engine: Python over PyTorch; device backends: MPS (Apple Silicon) and CUDA (cloud); model: Qwen2.5-0.5B / Llama-3.2-1B\nAPI: OpenAI-compatible /v1/completions streaming; sampling, stop conditions, cancellation\noracle: deterministic seeded path; harness: throughput, TTFT, TBT, p99, peak memory; seeded traces (short, mixed, bursty)\nlineage: nano-vllm and tiny-llm studied for a dependency-light, inspectable loop\n",
+      "abstraction_level": "Own the decode loop, streaming API, oracle, and the device-agnostic harness. Delegate matmul/attention to PyTorch (MPS/CUDA). Keep everything single-request here so every later optimization can be proven against this baseline on both devices.",
       "implementation_steps": [
-        "Load a small model and implement a single-request greedy/seeded decode loop; print token IDs/text/timings.",
-        "Wrap it in an OpenAI-compatible streaming endpoint with sampling, stop conditions, and cancellation.",
+        "Implement a single-request decode loop and an OpenAI-compatible streaming endpoint with sampling, stop conditions, and cancellation.",
         "Freeze a deterministic oracle fixture (prompt -> token IDs) used by every later module for parity.",
-        "Build the benchmark harness: throughput, TTFT, TBT, p99 latency, peak memory; emit machine-readable results.",
-        "Author seeded request traces (short, mixed, bursty) and record the single-request baseline numbers."
+        "Build a device-agnostic benchmark harness (throughput, TTFT, TBT, p99, peak memory) selectable between MPS and CUDA.",
+        "Author seeded traces (short, mixed, bursty); record single-request baselines on Apple Silicon and on a rented CUDA GPU."
       ],
       "execution_ladder": [
 
@@ -629,10 +537,10 @@
       "starter_interfaces": [
         "engine/reference.py    # single-request deterministic oracle",
         "engine/server.py       # OpenAI-compatible streaming + cancellation",
-        "bench/harness.py       # throughput/TTFT/TBT/p99/memory",
-        "bench/traces.py        # seeded request traces"
+        "engine/device.py       # MPS / CUDA backend selection",
+        "bench/harness.py       # cross-device throughput/TTFT/TBT/p99/memory"
       ],
-      "exit_gate": "The streaming API serves the small model; the oracle fixture is frozen; the harness reports baseline throughput, TTFT, TBT, p99, and peak memory reproducibly from seeded traces.",
+      "exit_gate": "The streaming API serves the model on both MPS and CUDA; the oracle is frozen; the harness reports baseline metrics reproducibly on both devices.",
       "official_api_docs": [
 
       ],
@@ -640,17 +548,12 @@
         {
           "title": "nano-vllm",
           "url": "https://github.com/GeeeekExplorer/nano-vllm",
-          "note": "~1.2k-line pure-Python vLLM core; the design lineage for this engine"
-        },
-        {
-          "title": "Karpathy llama2.c",
-          "url": "https://github.com/karpathy/llama2.c",
-          "note": "dependency-light, inspectable single-file inference loop"
+          "note": "~1.2k-line pure-Python vLLM core; design lineage"
         },
         {
           "title": "tiny-llm (skyzh)",
           "url": "https://skyzh.github.io/tiny-llm/",
-          "note": "a from-scratch LLM-serving course in MLX on Mac (Qwen3): attention, KV cache, quantization, and batching — a guided companion for building this engine"
+          "note": "from-scratch serving course in MLX on Apple Silicon"
         }
       ],
       "further_reading": [
@@ -659,7 +562,7 @@
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
           "section": "Model Serving — https://mlsysbook.ai/",
-          "reason": "serving-systems framing and metrics"
+          "reason": "serving metrics and framing"
         }
       ],
       "primary_sources": [
@@ -684,54 +587,53 @@
       "section_id": "section-w3-4",
       "status": "must_do_now",
       "estimated_hours": 30,
-      "problem": "Contiguous KV allocation wastes memory through internal and external fragmentation and caps concurrency. PagedAttention fixes this with fixed-size KV blocks and per-request block tables — the single biggest lever on how many requests fit in memory.",
-      "why_it_matters": "On a 16GB box, KV is the real ceiling, not weights. A paged allocator is the foundation continuous batching needs, and PagedAttention is the most-cited serving idea in the field.",
+      "problem": "Contiguous KV allocation wastes memory through fragmentation and caps concurrency. PagedAttention fixes this with fixed-size KV blocks and per-request block tables — the biggest lever on how many requests fit in memory, and the foundation of the memory-constrained outperformance story.",
+      "why_it_matters": "On a 16GB device KV is the real ceiling, not weights. A paged allocator is what later lets the engine fit more concurrency / longer context than baselines — the core of beating production systems in the memory-constrained regime.",
       "concepts": [
         "KV-cache memory ceiling",
         "fixed-size blocks & block tables",
-        "fragmentation (internal/external)",
+        "fragmentation",
         "paged attention gather",
         "reference-counted block sharing"
       ],
       "build_it": "Implement a fixed-size KV block allocator with a free list and per-request block tables.",
-      "use_it": "Drive it with the seeded traces and the benchmark harness; check parity against the oracle.",
+      "use_it": "Drive it with the seeded traces and the cross-device harness; check parity against the oracle.",
       "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
       "exercises": [
         {
           "exercise_id": "ex-w3-4-1",
           "type": "project",
           "prompt": "Implement a fixed-size KV block allocator with a free list and per-request block tables.",
-          "completion_gate": "Paged decode matches the oracle token-for-token; the memory study shows reduced fragmentation and higher max concurrency at fixed memory; block-size tradeoff is documented."
+          "completion_gate": "Paged decode matches the oracle; the memory study shows reduced fragmentation and higher max concurrency at fixed memory on both devices."
         },
         {
           "exercise_id": "ex-w3-4-2",
           "type": "coding",
-          "prompt": "Write a short note on fragmentation and the block-size tradeoff.",
-          "completion_gate": "Measured, reproducible, and parity-checked against the oracle."
+          "prompt": "Measure utilization and max concurrency at fixed memory (contiguous vs paged) on Apple Silicon and CUDA.",
+          "completion_gate": "Measured, reproducible, and parity-checked."
         }
       ],
       "tests_and_measurements": [
         "oracle parity",
-        "reproducible benchmark",
-        "A PagedAttention-style KV cache with a contiguous-vs-paged memory study and oracle parity."
+        "reproducible cross-device benchmark",
+        "A PagedAttention-style KV cache with a contiguous-vs-paged memory study on both devices and oracle parity."
       ],
-      "proof_artifact": "A PagedAttention-style KV cache with a contiguous-vs-paged memory study and oracle parity.",
+      "proof_artifact": "A PagedAttention-style KV cache with a contiguous-vs-paged memory study on both devices and oracle parity.",
       "mastery_gate": [
         "implement",
         "test",
         "measure",
         "explain"
       ],
-      "objective": "Implement a PagedAttention-style KV cache: a fixed-size block allocator, per-request block tables, allocation/free, and attention over paged blocks; quantify the memory win versus a contiguous baseline.",
-      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle fixture, and the seeded request traces.",
-      "architecture_config": "kv: fixed-size blocks (e.g., 16 tokens/block); per-request block table; free list; reference-counted blocks\nattention: gather KV from blocks (paged-attention kernel via FlashInfer/torch, or a simple gather for correctness)\nstudy: contiguous vs paged memory utilization and max concurrent requests at fixed memory\npaper: vLLM / PagedAttention (SOSP'23)\n",
-      "abstraction_level": "Own the block allocator, block tables, free list, and the paged-attention gather. Delegate the underlying matmul/softmax to PyTorch (or FlashInfer). Prove paged decode matches the contiguous oracle token-for-token before measuring memory.",
+      "objective": "Implement a PagedAttention-style KV cache: a fixed-size block allocator, per-request block tables, allocation/free, reference-counted shared blocks, and attention over paged blocks; quantify the memory win vs a contiguous baseline on both devices.",
+      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, and the seeded traces; the production baselines for benchmark modules.",
+      "architecture_config": "kv: fixed-size blocks (e.g., 16 tokens/block); per-request block table; free list; reference-counted blocks\nattention: gather KV from blocks (paged kernel via FlashInfer/torch, or a correctness gather)\nstudy: contiguous vs paged utilization and max concurrent requests at fixed memory, on MPS and CUDA\npaper: vLLM / PagedAttention (SOSP'23)\n",
+      "abstraction_level": "Own the block allocator, block tables, free list, and the paged gather. Delegate matmul/softmax to PyTorch. Prove paged decode matches the oracle token-for-token before measuring memory.",
       "implementation_steps": [
         "Implement a fixed-size KV block allocator with a free list and per-request block tables.",
         "Implement attention that gathers KV from non-contiguous blocks; verify parity with the W1-2 oracle.",
-        "Add allocation on demand during decode and free on request completion; add reference counting for shared blocks.",
-        "Measure memory utilization and max concurrent requests at fixed memory: contiguous vs paged.",
-        "Write a short note on fragmentation and the block-size tradeoff."
+        "Add on-demand allocation, free-on-completion, and reference counting for shared blocks.",
+        "Measure utilization and max concurrency at fixed memory (contiguous vs paged) on Apple Silicon and CUDA."
       ],
       "execution_ladder": [
 
@@ -740,9 +642,9 @@
       "starter_interfaces": [
         "engine/kv_cache.py     # block allocator + free list + block tables",
         "engine/paged_attn.py   # attention over paged blocks",
-        "bench/memory.py        # contiguous vs paged utilization"
+        "bench/memory.py        # contiguous vs paged, per device"
       ],
-      "exit_gate": "Paged decode matches the oracle token-for-token; the memory study shows reduced fragmentation and higher max concurrency at fixed memory; block-size tradeoff is documented.",
+      "exit_gate": "Paged decode matches the oracle; the memory study shows reduced fragmentation and higher max concurrency at fixed memory on both devices.",
       "official_api_docs": [
 
       ],
@@ -755,12 +657,12 @@
         {
           "title": "nano-vllm",
           "url": "https://github.com/GeeeekExplorer/nano-vllm",
-          "note": "compact paged-cache + block-table reference in Python"
+          "note": "compact paged-cache + block-table reference"
         },
         {
           "title": "tiny-llm (skyzh)",
           "url": "https://skyzh.github.io/tiny-llm/",
-          "note": "a from-scratch LLM-serving course in MLX on Mac (Qwen3): attention, KV cache, quantization, and batching — a guided companion for building this engine"
+          "note": "KV cache from scratch on Apple Silicon"
         }
       ],
       "further_reading": [
@@ -776,7 +678,7 @@
           "name": "CSE 234: Data Systems for Machine Learning",
           "url": "https://haoailab.com/cse234-w25/index.html",
           "section": "Serving systems — https://hao-ai-lab.github.io/cse234-w25/",
-          "reason": "serving memory and batching context"
+          "reason": "serving memory and batching"
         }
       ],
       "primary_sources": [
@@ -790,64 +692,64 @@
         "resource_id": "cmu-15445",
         "name": "CMU 15-445 Database Systems",
         "url": "https://15445.courses.cs.cmu.edu/",
-        "section": "CMU 15-445 Buffer Pool / page management (block allocation analog for the KV cache)"
+        "section": "CMU 15-445 Buffer Pool / page management (block-allocation analog for the KV cache)"
       }
     },
     {
       "lesson_id": "lesson-w5-6-batching",
       "unit_id": "unit-w5-6-batching",
-      "title": "Weeks 5-6 · Continuous batching (Orca)",
+      "title": "Weeks 5-6 · Continuous batching (Orca) + admission control",
       "phase_id": "phase-inference-scheduler",
       "section_id": "section-w5-6",
       "status": "must_do_now",
       "estimated_hours": 30,
-      "problem": "Static request batching wastes the GPU: short requests wait for long ones and finished slots sit idle. Orca's insight is to schedule at the granularity of a single decode iteration, admitting and retiring requests every step.",
-      "why_it_matters": "Continuous batching is the single biggest throughput lever in modern serving (10-20x over static) and the default in vLLM/SGLang — implementing it from the Orca paper is a top-signal systems artifact.",
+      "problem": "Static batching wastes the device and collapses under load. Orca schedules at the granularity of a single decode iteration, admitting and retiring requests every step; admission control keeps the system within SLO and sheds excess safely.",
+      "why_it_matters": "Continuous batching is the single biggest throughput lever (10-20x) and the default in vLLM/SGLang. It is also what lets the engine beat llama.cpp on concurrent throughput on Apple Silicon, where llama.cpp's server batches far less aggressively.",
       "concepts": [
         "iteration-level scheduling",
         "ragged / padding-free batching",
-        "per-step admission & eviction",
-        "GPU utilization vs static batching"
+        "token/KV-aware admission",
+        "overload 429 & backpressure",
+        "throughput vs static batching"
       ],
-      "build_it": "Implement an iteration-level scheduler: each step, select runnable requests, run one decode iteration, retire finished ones.",
-      "use_it": "Drive it with the seeded traces and the benchmark harness; check parity against the oracle.",
+      "build_it": "Implement an iteration-level scheduler: each step select runnable requests, run one decode iteration, retire finished ones.",
+      "use_it": "Drive it with the seeded traces and the cross-device harness; check parity against the oracle.",
       "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
       "exercises": [
         {
           "exercise_id": "ex-w5-6-1",
           "type": "project",
-          "prompt": "Implement an iteration-level scheduler: each step, select runnable requests, run one decode iteration, retire finished ones.",
-          "completion_gate": "Continuous batching matches the oracle per sequence and shows a clear throughput/utilization gain over static batching on the seeded traces."
+          "prompt": "Implement an iteration-level scheduler: each step select runnable requests, run one decode iteration, retire finished ones.",
+          "completion_gate": "Continuous batching matches the oracle per sequence, shows a throughput gain over static batching on both devices, and under overload returns 429 with bounded p99 and no leaked KV."
         },
         {
           "exercise_id": "ex-w5-6-2",
           "type": "coding",
-          "prompt": "Measure throughput and GPU utilization vs static batching across the seeded traces.",
-          "completion_gate": "Measured, reproducible, and parity-checked against the oracle."
+          "prompt": "Verify per-sequence parity with the oracle; measure throughput/goodput vs static batching on both devices.",
+          "completion_gate": "Measured, reproducible, and parity-checked."
         }
       ],
       "tests_and_measurements": [
         "oracle parity",
-        "reproducible benchmark",
-        "An Orca-style continuous-batching scheduler with oracle parity and a throughput study vs static batching."
+        "reproducible cross-device benchmark",
+        "An Orca-style continuous-batching scheduler with admission control, oracle parity, and a throughput/goodput study on both devices."
       ],
-      "proof_artifact": "An Orca-style continuous-batching scheduler with oracle parity and a throughput study vs static batching.",
+      "proof_artifact": "An Orca-style continuous-batching scheduler with admission control, oracle parity, and a throughput/goodput study on both devices.",
       "mastery_gate": [
         "implement",
         "test",
         "measure",
         "explain"
       ],
-      "objective": "Implement Orca-style iteration-level scheduling: a ragged, padding-free batch whose membership changes every decode step, on top of the paged KV cache; measure throughput versus static batching.",
-      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle fixture, and the seeded request traces.",
-      "architecture_config": "scheduler: per-iteration admit/step/evict; ragged batch; no right-padding; position ids + attention masks per sequence\nbatch: mixed sequence lengths share one decode step; completed sequences free their KV blocks immediately\nstudy: throughput and GPU utilization vs static batching across the seeded traces\npaper: Orca (OSDI'22)\n",
-      "abstraction_level": "Own the scheduler loop, batch membership, padding-free masking, and per-step admission/eviction. Build on the W3-4 paged cache for KV. Require output parity with the single-request oracle for every sequence before optimizing.",
+      "objective": "Implement Orca-style iteration-level scheduling on the paged KV cache — a ragged, padding-free batch whose membership changes every step — plus a bounded queue with token/KV-aware admission, overload 429s, and cancellation cleanup.",
+      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, and the seeded traces; the production baselines for benchmark modules.",
+      "architecture_config": "scheduler: per-iteration admit/step/evict; ragged batch; no right-padding; per-sequence position ids + masks\nadmission: bounded queue; token-budget + paged-block-availability admission; overload -> 429; per-request timeout + cancellation\nstudy: throughput and goodput vs static batching across seeded traces, on MPS and CUDA\npaper: Orca (OSDI'22)\n",
+      "abstraction_level": "Own the scheduler loop, batch membership, padding-free masking, admission arithmetic, and overload behavior, on the W3-4 paged cache. Require parity with the single-request oracle for every sequence before optimizing.",
       "implementation_steps": [
-        "Implement an iteration-level scheduler: each step, select runnable requests, run one decode iteration, retire finished ones.",
-        "Build ragged batches without right-padding using per-sequence position ids and attention masks.",
-        "Free KV blocks immediately on completion and admit waiting requests into freed capacity.",
-        "Verify every sequence's output matches the single-request oracle.",
-        "Measure throughput and GPU utilization vs static batching across the seeded traces."
+        "Implement an iteration-level scheduler: each step select runnable requests, run one decode iteration, retire finished ones.",
+        "Build ragged, padding-free batches with per-sequence position ids and masks; free KV on completion.",
+        "Add a bounded queue with token/KV-aware admission, overload 429s, timeouts, and cancellation cleanup.",
+        "Verify per-sequence parity with the oracle; measure throughput/goodput vs static batching on both devices."
       ],
       "execution_ladder": [
 
@@ -856,9 +758,10 @@
       "starter_interfaces": [
         "engine/scheduler.py    # iteration-level admit/step/evict",
         "engine/batch.py        # ragged, padding-free batch + masks",
-        "bench/throughput.py    # continuous vs static batching"
+        "engine/admission.py    # token/KV-aware admission + 429",
+        "bench/throughput.py    # continuous vs static, per device"
       ],
-      "exit_gate": "Continuous batching matches the oracle per sequence and shows a clear throughput/utilization gain over static batching on the seeded traces.",
+      "exit_gate": "Continuous batching matches the oracle per sequence, shows a throughput gain over static batching on both devices, and under overload returns 429 with bounded p99 and no leaked KV.",
       "official_api_docs": [
 
       ],
@@ -866,7 +769,7 @@
         {
           "title": "Orca (OSDI'22)",
           "url": "https://www.usenix.org/conference/osdi22/presentation/yu",
-          "note": "the paper this module implements (iteration-level scheduling)"
+          "note": "the paper this module implements"
         },
         {
           "title": "nano-vllm",
@@ -887,7 +790,7 @@
           "name": "OSTEP",
           "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
           "section": "Scheduling & concurrency — https://pages.cs.wisc.edu/~remzi/OSTEP/",
-          "reason": "queues, condition variables, scheduling policy"
+          "reason": "queues, condition variables, policy"
         }
       ],
       "primary_sources": [
@@ -901,65 +804,64 @@
         "resource_id": "ostep",
         "name": "OSTEP",
         "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
-        "section": "OSTEP scheduling + concurrency (queues, condition variables) applied to an iteration-level inference scheduler"
+        "section": "OSTEP scheduling + concurrency (queues, condition variables) for an iteration-level inference scheduler"
       }
     },
     {
       "lesson_id": "lesson-w7-8-prefill",
       "unit_id": "unit-w7-8-prefill",
-      "title": "Weeks 7-8 · Chunked prefill (Sarathi-Serve)",
+      "title": "Weeks 7-8 · Chunked prefill (Sarathi-Serve) + latency-throughput Pareto",
       "phase_id": "phase-inference-scheduler",
       "section_id": "section-w7-8",
       "status": "must_do_now",
       "estimated_hours": 30,
-      "problem": "A long prefill monopolizes a decode step and stalls every other request's tokens, spiking tail latency (TBT). Sarathi-Serve splits prefills into token-budgeted chunks and piggybacks decode tokens, taming the throughput-latency tradeoff.",
-      "why_it_matters": "Chunked prefill is the default in vLLM V1 and the cleanest example of 'read a paper, extend the scheduler.' It builds directly on Orca and is exactly the fancy-paper-on-a-stack move the project is about.",
+      "problem": "A long prefill monopolizes a decode step and stalls every other request's tokens, spiking tail latency. Sarathi-Serve splits prefills into token-budgeted chunks and piggybacks decode tokens; sweeping the knobs reveals the latency-throughput Pareto frontier.",
+      "why_it_matters": "Chunked prefill is the default in vLLM V1 and the cleanest 'read a paper, extend the scheduler' step. The Pareto study is what lets you say precisely which regime you win in — the backbone of the outperformance claim.",
       "concepts": [
-        "prefill vs decode phases",
-        "prefill-decode interference",
+        "prefill vs decode interference",
         "chunked prefill & token budget",
         "stall-free batching",
-        "TTFT vs TBT tradeoff"
+        "latency-throughput Pareto frontier",
+        "best-served regime"
       ],
-      "build_it": "Add a per-iteration token budget and split long prefills into chunks that fit it.",
-      "use_it": "Drive it with the seeded traces and the benchmark harness; check parity against the oracle.",
+      "build_it": "Add a per-iteration token budget and split long prefills into chunks; piggyback decodes (stall-free batching).",
+      "use_it": "Drive it with the seeded traces and the cross-device harness; check parity against the oracle.",
       "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
       "exercises": [
         {
           "exercise_id": "ex-w7-8-1",
           "type": "project",
-          "prompt": "Add a per-iteration token budget and split long prefills into chunks that fit it.",
-          "completion_gate": "Chunked prefill matches the oracle; the TTFT/TBT sweep shows reduced decode stalls and a clear, defended token-budget default."
+          "prompt": "Add a per-iteration token budget and split long prefills into chunks; piggyback decodes (stall-free batching).",
+          "completion_gate": "Chunked prefill matches the oracle; the Pareto frontier is plotted per device with an identified knee and a stated best-served regime."
         },
         {
           "exercise_id": "ex-w7-8-2",
           "type": "coding",
-          "prompt": "Pick a default token budget and justify it from the data.",
-          "completion_gate": "Measured, reproducible, and parity-checked against the oracle."
+          "prompt": "Plot the latency-throughput Pareto frontier per device and identify the knee and the regime you serve best.",
+          "completion_gate": "Measured, reproducible, and parity-checked."
         }
       ],
       "tests_and_measurements": [
         "oracle parity",
-        "reproducible benchmark",
-        "A Sarathi-Serve chunked-prefill scheduler with a TTFT/TBT interference study and a defended token-budget default."
+        "reproducible cross-device benchmark",
+        "A Sarathi-Serve chunked-prefill scheduler and a per-device latency-throughput Pareto characterization with a stated best regime."
       ],
-      "proof_artifact": "A Sarathi-Serve chunked-prefill scheduler with a TTFT/TBT interference study and a defended token-budget default.",
+      "proof_artifact": "A Sarathi-Serve chunked-prefill scheduler and a per-device latency-throughput Pareto characterization with a stated best regime.",
       "mastery_gate": [
         "implement",
         "test",
         "measure",
         "explain"
       ],
-      "objective": "Implement Sarathi-Serve chunked prefill + stall-free batching: cap tokens per iteration, split long prefills into chunks, and piggyback decode tokens onto prefill steps; study the prefill-decode interference and the TTFT-vs-TBT tradeoff.",
-      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle fixture, and the seeded request traces.",
-      "architecture_config": "prefill: split into token chunks under a per-iteration token budget; mix chunked prefill with ongoing decodes (stall-free batching)\nknobs: per-iteration token budget / chunk size; study TTFT (prefill latency) vs TBT (inter-token latency under load)\npaper: Sarathi-Serve (OSDI'24), extending Orca\n",
-      "abstraction_level": "Own the chunking policy, the per-iteration token budget, and the stall-free mixing of prefill chunks with decode tokens, on top of the Orca scheduler and paged cache. Prove output parity with the oracle; then study TTFT/TBT as a function of the token budget.",
+      "objective": "Implement Sarathi-Serve chunked prefill + stall-free batching, then sweep the token-budget/batch/chunk knobs to map the latency-throughput Pareto frontier on Apple Silicon and CUDA.",
+      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, and the seeded traces; the production baselines for benchmark modules.",
+      "architecture_config": "prefill: split into token chunks under a per-iteration token budget; mix chunked prefill with ongoing decodes (stall-free)\nstudy: sweep token budget / max batch / chunk size; plot throughput vs p99 latency (the Pareto frontier) per device\npaper: Sarathi-Serve (OSDI'24), extending Orca\n",
+      "abstraction_level": "Own the chunking policy, the per-iteration token budget, the stall-free mixing of prefill chunks with decodes, and the knob sweep/analysis, on the Orca scheduler. Prove parity with the oracle, then characterize the frontier.",
       "implementation_steps": [
-        "Add a per-iteration token budget and split long prefills into chunks that fit it.",
-        "Piggyback decode tokens onto prefill iterations (stall-free batching) so decodes are not starved.",
+        "Add a per-iteration token budget and split long prefills into chunks; piggyback decodes (stall-free batching).",
         "Verify chunked prefill produces identical tokens to the oracle.",
-        "Measure TTFT and TBT as a function of chunk size / token budget; show the interference and the tradeoff.",
-        "Pick a default token budget and justify it from the data."
+        "Sweep token budget / max batch / chunk size; record throughput and p99 at each point on both devices.",
+        "Plot the latency-throughput Pareto frontier per device and identify the knee and the regime you serve best."
       ],
       "execution_ladder": [
 
@@ -967,10 +869,10 @@
       "training_phases": null,
       "starter_interfaces": [
         "engine/prefill.py      # chunked prefill + token budget",
-        "engine/scheduler.py    # stall-free mixing of prefill chunks + decodes",
-        "bench/ttft_tbt.py      # TTFT vs TBT sweep"
+        "engine/scheduler.py    # stall-free mixing",
+        "bench/pareto.py        # knob sweep + frontier, per device"
       ],
-      "exit_gate": "Chunked prefill matches the oracle; the TTFT/TBT sweep shows reduced decode stalls and a clear, defended token-budget default.",
+      "exit_gate": "Chunked prefill matches the oracle; the Pareto frontier is plotted per device with an identified knee and a stated best-served regime.",
       "official_api_docs": [
 
       ],
@@ -978,17 +880,12 @@
         {
           "title": "Sarathi-Serve (OSDI'24)",
           "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
-          "note": "the paper this module implements (chunked prefill, stall-free batching)"
+          "note": "the paper this module implements"
         },
         {
-          "title": "vLLM chunked prefill",
-          "url": "https://docs.vllm.ai/en/latest/",
-          "note": "the production default this reproduces"
-        },
-        {
-          "title": "mini-sglang",
-          "url": "https://github.com/sgl-project/mini-sglang",
-          "note": "chunked prefill + overlap scheduling in a minimal SGLang reimplementation"
+          "title": "mini-sglang (LMSYS blog)",
+          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
+          "note": "chunked prefill + overlap scheduling in ~5k lines"
         }
       ],
       "further_reading": [
@@ -997,7 +894,7 @@
           "name": "CSE 234: Data Systems for Machine Learning",
           "url": "https://haoailab.com/cse234-w25/index.html",
           "section": "Serving systems — https://hao-ai-lab.github.io/cse234-w25/",
-          "reason": "throughput-latency tradeoff framing"
+          "reason": "throughput-latency tradeoff"
         },
         {
           "resource_id": "mlsys-book",
@@ -1012,11 +909,6 @@
           "title": "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve",
           "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
           "reason": "chunked prefill and stall-free batching"
-        },
-        {
-          "title": "mini-sglang design walkthrough (LMSYS blog)",
-          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
-          "reason": "RadixAttention, overlap scheduling, and chunked prefill explained in ~5k lines of Python"
         }
       ],
       "primary_resource": {
@@ -1027,185 +919,72 @@
       }
     },
     {
-      "lesson_id": "lesson-w9-10-slo",
-      "unit_id": "unit-w9-10-slo",
-      "title": "Weeks 9-10 · Latency-throughput Pareto + SLO-aware admission",
+      "lesson_id": "lesson-w9-10-benchmark",
+      "unit_id": "unit-w9-10-benchmark",
+      "title": "Weeks 9-10 · Cross-device benchmark vs vLLM, SGLang, and llama.cpp",
       "phase_id": "phase-inference-scheduler",
       "section_id": "section-w9-10",
       "status": "must_do_now",
       "estimated_hours": 30,
-      "problem": "With batching and chunked prefill in place, the system has a knobbed latency-throughput frontier and can still collapse under overload. The engineering value is characterizing that frontier and adding admission control that holds SLOs and sheds excess safely.",
-      "why_it_matters": "The latency-throughput Pareto study plus a defensible SLO-aware scheduler is exactly what inference interviews probe — it shows you can reason about the tradeoff, not just code a feature.",
+      "problem": "An engine is only credible against the real thing. This module runs the same model and the same seeded traces through vLLM, SGLang, and llama.cpp across devices, and places your engine on the same axes — honestly establishing where you stand and where you can win.",
+      "why_it_matters": "The apples-to-apples, multi-engine, multi-device comparison is the single most convincing artifact for an inference role. It also pins down the exact regime to target in Week 11-12.",
       "concepts": [
-        "latency-throughput Pareto frontier",
-        "goodput under SLO",
-        "token/KV-aware admission",
-        "overload 429 & backpressure",
-        "timeouts & cancellation cleanup"
+        "apples-to-apples benchmarking",
+        "multi-engine baselines (vLLM/SGLang/llama.cpp)",
+        "multi-device (CUDA + Apple Silicon)",
+        "reproducible run cards",
+        "regime identification"
       ],
-      "build_it": "Sweep token budget, max batch, and chunk size; record throughput and p99 latency at each point.",
-      "use_it": "Drive it with the seeded traces and the benchmark harness; check parity against the oracle.",
+      "build_it": "Stand up vLLM and SGLang on a rented CUDA GPU and llama.cpp on the M4 (and CUDA) with the same model and quantization.",
+      "use_it": "Drive it with the seeded traces and the cross-device harness; check parity against the oracle.",
       "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
       "exercises": [
         {
           "exercise_id": "ex-w9-10-1",
           "type": "project",
-          "prompt": "Sweep token budget, max batch, and chunk size; record throughput and p99 latency at each point.",
-          "completion_gate": "The Pareto frontier is plotted with an identified knee; under overload the service returns 429 and keeps p99 bounded with no leaked KV; the SLO-aware policy beats FIFO on goodput."
+          "prompt": "Stand up vLLM and SGLang on a rented CUDA GPU and llama.cpp on the M4 (and CUDA) with the same model and quantization.",
+          "completion_gate": "A reproducible comparison matrix reports your engine vs vLLM, SGLang, and llama.cpp across CUDA and Apple Silicon, from checked-in configs, with a defended target regime for the optimization."
         },
         {
           "exercise_id": "ex-w9-10-2",
           "type": "coding",
-          "prompt": "Compare FIFO vs an SLO-aware policy on goodput under an overload trace.",
-          "completion_gate": "Measured, reproducible, and parity-checked against the oracle."
+          "prompt": "Identify the target regime: where you match/beat (Apple Silicon, memory-constrained, low concurrency) and where you don't (CUDA at scale).",
+          "completion_gate": "Measured, reproducible, and parity-checked."
         }
       ],
       "tests_and_measurements": [
         "oracle parity",
-        "reproducible benchmark",
-        "A latency-throughput Pareto characterization plus an SLO-aware admission scheduler that beats FIFO on goodput under overload."
+        "reproducible cross-device benchmark",
+        "A reproducible cross-device benchmark matrix vs vLLM, SGLang, and llama.cpp, with a defended target regime."
       ],
-      "proof_artifact": "A latency-throughput Pareto characterization plus an SLO-aware admission scheduler that beats FIFO on goodput under overload.",
+      "proof_artifact": "A reproducible cross-device benchmark matrix vs vLLM, SGLang, and llama.cpp, with a defended target regime.",
       "mastery_gate": [
         "implement",
         "test",
         "measure",
         "explain"
       ],
-      "objective": "Sweep the batch/chunk knobs to map the latency-throughput Pareto frontier, then implement SLO-aware admission control (token- and KV-aware), overload 429s, and bounded tail latency; compare FIFO vs an SLO-aware policy under an overload trace.",
-      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle fixture, and the seeded request traces.",
-      "architecture_config": "study: sweep token budget / max batch / chunk size; plot throughput vs p99 latency (the Pareto frontier)\nadmission: bounded queue; token-budget + KV-availability admission; overload -> 429; per-request timeout + cancellation cleanup\npolicy: FIFO baseline vs SLO-aware; metric: goodput (requests meeting SLO) under an overload trace\n",
-      "abstraction_level": "Own the knob sweep and analysis, the bounded queue, the admission arithmetic (token budget + paged-block availability), the overload/timeout behavior, and the policy comparison. Build on the engine's own KV/capacity signals from W3-8.",
+      "objective": "Stand up vLLM, SGLang, and llama.cpp as baselines; run the shared seeded traces through all of them and your engine across a rented CUDA GPU and the Apple Silicon M4; report throughput, p99 TTFT/TBT, goodput, and memory; identify the regime where your engine is competitive or ahead.",
+      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, and the seeded traces; the production baselines for benchmark modules.",
+      "architecture_config": "baselines: vLLM (CUDA), SGLang (CUDA), llama.cpp (Apple Silicon + CUDA); your engine on both devices\ntraces: shared seeded (short, mixed, bursty, long-context, low-concurrency)\nmetrics: throughput, p99 TTFT/TBT, goodput, peak memory; configs + run cards checked in\noutput: a comparison matrix and a stated target regime for the optimization\n",
+      "abstraction_level": "Own the harness, the comparison methodology, and the analysis. Use the production engines as external baselines — same model, same traces, same metrics. Be rigorous and honest about where they win and where they don't.",
       "implementation_steps": [
-        "Sweep token budget, max batch, and chunk size; record throughput and p99 latency at each point.",
-        "Plot the latency-throughput Pareto frontier and identify the knee.",
-        "Implement a bounded queue with token- and KV-aware admission; return 429 on overload instead of collapsing.",
-        "Add per-request timeouts and cancellation cleanup with no leaked KV blocks under stress.",
-        "Compare FIFO vs an SLO-aware policy on goodput under an overload trace."
+        "Stand up vLLM and SGLang on a rented CUDA GPU and llama.cpp on the M4 (and CUDA) with the same model and quantization.",
+        "Run the shared seeded traces through every engine on every device; capture throughput, p99 TTFT/TBT, goodput, memory.",
+        "Build the comparison matrix (engine x device x trace x metric) from checked-in configs and run cards.",
+        "Identify the target regime: where you match/beat (Apple Silicon, memory-constrained, low concurrency) and where you don't (CUDA at scale)."
       ],
       "execution_ladder": [
 
       ],
       "training_phases": null,
       "starter_interfaces": [
-        "bench/pareto.py        # knob sweep + frontier plot",
-        "engine/admission.py    # token/KV-aware admission + 429",
-        "engine/scheduler.py    # SLO-aware vs FIFO policy"
+        "bench/baselines/         # vLLM, SGLang, llama.cpp launch + config",
+        "bench/compare.py        # engine x device x trace matrix",
+        "bench/runcards/         # reproducible run cards",
+        "docs/benchmark.md       # methodology + results"
       ],
-      "exit_gate": "The Pareto frontier is plotted with an identified knee; under overload the service returns 429 and keeps p99 bounded with no leaked KV; the SLO-aware policy beats FIFO on goodput.",
-      "official_api_docs": [
-
-      ],
-      "reference_implementations": [
-        {
-          "title": "Sarathi-Serve (OSDI'24)",
-          "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
-          "note": "the throughput-latency tradeoff this study characterizes"
-        },
-        {
-          "title": "vLLM metrics",
-          "url": "https://docs.vllm.ai/en/latest/",
-          "note": "production metric definitions"
-        }
-      ],
-      "further_reading": [
-        {
-          "resource_id": "ostep",
-          "name": "OSTEP",
-          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/",
-          "section": "Scheduling & queues — https://pages.cs.wisc.edu/~remzi/OSTEP/",
-          "reason": "scheduling policy and overload"
-        },
-        {
-          "resource_id": "ddia",
-          "name": "Designing Data-Intensive Applications",
-          "url": "https://dataintensive.net/",
-          "section": "Load & reliability — https://dataintensive.net/",
-          "reason": "percentiles, backpressure, graceful degradation"
-        }
-      ],
-      "primary_sources": [
-        {
-          "title": "Taming Throughput-Latency Tradeoff in LLM Inference (Sarathi-Serve)",
-          "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
-          "reason": "latency-throughput tradeoff and scheduling"
-        }
-      ],
-      "primary_resource": {
-        "resource_id": "ddia",
-        "name": "Designing Data-Intensive Applications",
-        "url": "https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/",
-        "section": "DDIA: load, latency percentiles, backpressure, and graceful degradation under overload"
-      }
-    },
-    {
-      "lesson_id": "lesson-w11-12-release",
-      "unit_id": "unit-w11-12-release",
-      "title": "Weeks 11-12 · Benchmark vs vLLM, hardening & portfolio release",
-      "phase_id": "phase-inference-scheduler",
-      "section_id": "section-w11-12",
-      "status": "must_do_now",
-      "estimated_hours": 26,
-      "problem": "A serving engine is only credible with an apples-to-apples comparison to the real thing and a clear write-up. The final modules turn the engine into a portfolio: a reproducible benchmark vs vLLM, hardening, and a report a hiring engineer can read in ten minutes.",
-      "why_it_matters": "The benchmark + report is the portfolio. 'My from-scratch engine reaches X% of vLLM throughput and here is the latency-throughput frontier, reproducible from configs' is the sentence that gets the interview.",
-      "concepts": [
-        "apples-to-apples benchmarking",
-        "reproducible run cards & configs",
-        "cancellation, timeouts, graceful shutdown",
-        "metrics endpoints",
-        "owned-vs-delegated architecture write-up"
-      ],
-      "build_it": "Stand up vLLM on a rented CUDA GPU and llama.cpp on the M4; run the shared seeded traces through all three.",
-      "use_it": "Drive it with the seeded traces and the benchmark harness; check parity against the oracle.",
-      "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
-      "exercises": [
-        {
-          "exercise_id": "ex-w11-12-1",
-          "type": "project",
-          "prompt": "Stand up vLLM on a rented CUDA GPU and llama.cpp on the M4; run the shared seeded traces through all three.",
-          "completion_gate": "A reproducible benchmark reports all three engines on shared traces from checked-in configs; the service handles cancellation/timeouts/shutdown cleanly; the report and README tell the end-to-end story."
-        },
-        {
-          "exercise_id": "ex-w11-12-2",
-          "type": "coding",
-          "prompt": "Optional stretch: implement one hand-written CUDA/Metal kernel on a hot path and measure its effect.",
-          "completion_gate": "Measured, reproducible, and parity-checked against the oracle."
-        }
-      ],
-      "tests_and_measurements": [
-        "oracle parity",
-        "reproducible benchmark",
-        "A reproducible ElenkhosServe-vs-vLLM-vs-llama.cpp benchmark, a hardened service, and an architecture report + portfolio README."
-      ],
-      "proof_artifact": "A reproducible ElenkhosServe-vs-vLLM-vs-llama.cpp benchmark, a hardened service, and an architecture report + portfolio README.",
-      "mastery_gate": [
-        "implement",
-        "test",
-        "measure",
-        "explain"
-      ],
-      "objective": "Run a reproducible head-to-head benchmark of ElenkhosServe vs vLLM (CUDA) and llama.cpp (M4 edge) on shared traces, harden the service (cancellation, timeouts, graceful shutdown, metrics), and ship an architecture report and portfolio README. Optional stretch: one hand-written CUDA/Metal kernel.",
-      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle fixture, and the seeded request traces.",
-      "architecture_config": "benchmark: ElenkhosServe vs vLLM (rented CUDA GPU) vs llama.cpp (M4 edge) on shared seeded traces; throughput, p99 TTFT/TBT, goodput, memory; configs checked in\nhardening: cancellation, deadlines, graceful drain, /metrics endpoint, reproducible run cards\nrelease: architecture README separating owned code (scheduler, batching, KV paging, chunked prefill, admission) from delegated kernels\nstretch (optional): one hand-written CUDA/Metal paged-attention or sampling kernel\n",
-      "abstraction_level": "Own the benchmark harness, the comparison methodology, the hardening, and the write-up. Delegate kernels to PyTorch/llama.cpp; vLLM is the external baseline. The optional kernel is a depth spike, not a requirement.",
-      "implementation_steps": [
-        "Stand up vLLM on a rented CUDA GPU and llama.cpp on the M4; run the shared seeded traces through all three.",
-        "Report throughput, p99 TTFT/TBT, goodput, and memory with checked-in configs and run cards.",
-        "Harden the service: cancellation, deadlines, graceful drain, and a /metrics endpoint.",
-        "Write the architecture report and portfolio README separating owned code from delegated kernels.",
-        "Optional stretch: implement one hand-written CUDA/Metal kernel on a hot path and measure its effect."
-      ],
-      "execution_ladder": [
-
-      ],
-      "training_phases": null,
-      "starter_interfaces": [
-        "bench/compare.py       # ElenkhosServe vs vLLM vs llama.cpp",
-        "serve/metrics.py       # /metrics + run cards",
-        "docs/architecture.md   # owned vs delegated, results",
-        "README.md              # portfolio entry point"
-      ],
-      "exit_gate": "A reproducible benchmark reports all three engines on shared traces from checked-in configs; the service handles cancellation/timeouts/shutdown cleanly; the report and README tell the end-to-end story.",
+      "exit_gate": "A reproducible comparison matrix reports your engine vs vLLM, SGLang, and llama.cpp across CUDA and Apple Silicon, from checked-in configs, with a defended target regime for the optimization.",
       "official_api_docs": [
 
       ],
@@ -1213,12 +992,17 @@
         {
           "title": "vLLM",
           "url": "https://github.com/vllm-project/vllm",
-          "note": "the production engine used as the benchmark baseline"
+          "note": "production baseline (CUDA)"
+        },
+        {
+          "title": "SGLang",
+          "url": "https://github.com/sgl-project/sglang",
+          "note": "production baseline (CUDA, RadixAttention)"
         },
         {
           "title": "llama.cpp",
           "url": "https://github.com/ggml-org/llama.cpp",
-          "note": "the M4 on-device edge baseline"
+          "note": "production baseline (Apple Silicon + CUDA)"
         }
       ],
       "further_reading": [
@@ -1227,175 +1011,156 @@
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
           "section": "Benchmarking — https://mlsysbook.ai/",
-          "reason": "benchmark methodology and write-up"
+          "reason": "benchmark methodology"
         },
         {
-          "resource_id": "gpu-mode",
-          "name": "GPU Mode",
-          "url": "https://github.com/gpu-mode",
-          "section": "GPU Mode lectures — https://github.com/gpu-mode/lectures",
-          "reason": "optional hand-written kernel stretch"
+          "resource_id": "cse-234",
+          "name": "CSE 234: Data Systems for Machine Learning",
+          "url": "https://haoailab.com/cse234-w25/index.html",
+          "section": "Serving systems — https://hao-ai-lab.github.io/cse234-w25/",
+          "reason": "comparison framing"
         }
       ],
       "primary_sources": [
         {
           "title": "Inside vLLM: Anatomy of a High-Throughput LLM Inference System",
           "url": "https://blog.vllm.ai/2025/09/05/anatomy-of-vllm.html",
-          "reason": "baseline engine architecture for the comparison"
+          "reason": "baseline architecture for the comparison"
         }
       ],
       "primary_resource": {
         "resource_id": "mlsys-book",
         "name": "MLSys Book",
         "url": "https://mlsysbook.ai/",
-        "section": "MLSys Book: benchmarking methodology and serving systems write-up"
+        "section": "MLSys Book: benchmarking methodology for serving systems"
       }
     },
     {
-      "lesson_id": "lesson-dsa",
-      "unit_id": "unit-dsa",
-      "title": "Fall · Timed DSA (NeetCode)",
-      "phase_id": "phase-interview-gates",
-      "section_id": "section-gates",
-      "status": "deferred",
-      "estimated_hours": 40,
-      "problem": "Timed 25-min NeetCode 150 solves with a pattern log.",
-      "why_it_matters": "Fall interview gate (after the summer build window); the AI-Infra loops still require a coding screen.",
+      "lesson_id": "lesson-w11-12-optimize",
+      "unit_id": "unit-w11-12-optimize",
+      "title": "Weeks 11-12 · Outperformance optimization + portfolio release",
+      "phase_id": "phase-inference-scheduler",
+      "section_id": "section-w11-12",
+      "status": "must_do_now",
+      "estimated_hours": 26,
+      "problem": "With an honest baseline in hand, implement one paper-backed optimization aimed at the target regime and demonstrate a reproducible win over the production baseline there — then package the whole thing as a portfolio artifact.",
+      "why_it_matters": "A concrete 'beat the production system in this regime, here is the number' result is the sentence that gets the interview. It turns a faithful reimplementation into a project with a point of view.",
       "concepts": [
-        "Fall · Timed DSA (NeetCode)"
+        "targeted optimization for a regime",
+        "KV quantization (KIVI)",
+        "KV eviction / attention sinks (H2O, StreamingLLM)",
+        "unified-memory KV offload (FlexGen, Apple Silicon)",
+        "speculative decoding (EAGLE)",
+        "quality-preserving outperformance"
       ],
-      "build_it": "Timed 25-min NeetCode 150 solves with a pattern log.",
-      "use_it": "Week-checkpoint >=80% in time on a mixed set.",
-      "ship_it": "Pattern log for the fall coding screens.",
+      "build_it": "Choose the optimization from the menu based on the W9-10 target regime and your hardware.",
+      "use_it": "Drive it with the seeded traces and the cross-device harness; check parity against the oracle.",
+      "ship_it": "Publish the module with tests, the measurement, and a short design note; update the engine README.",
       "exercises": [
         {
-          "exercise_id": "ex-dsa-1",
+          "exercise_id": "ex-w11-12-1",
           "type": "project",
-          "prompt": "Timed 25-min NeetCode 150 solves with a pattern log.",
-          "completion_gate": "Week-checkpoint >=80% in time on a mixed set."
+          "prompt": "Choose the optimization from the menu based on the W9-10 target regime and your hardware.",
+          "completion_gate": "The optimization preserves quality and produces a reproducible win over the production baseline in the defended regime; the report and README tell the end-to-end story from checked-in configs."
+        },
+        {
+          "exercise_id": "ex-w11-12-2",
+          "type": "coding",
+          "prompt": "Write the benchmark report and portfolio README; (optional stretch) hand-write one CUDA/Metal kernel on a hot path.",
+          "completion_gate": "Measured, reproducible, and parity-checked."
         }
       ],
       "tests_and_measurements": [
-        "Week-checkpoint >=80% in time on a mixed set."
+        "oracle parity",
+        "reproducible cross-device benchmark",
+        "One paper-backed optimization that reproducibly outperforms the production baseline in the defended regime, plus the benchmark report and portfolio README."
       ],
-      "proof_artifact": "Pattern log for the fall coding screens.",
+      "proof_artifact": "One paper-backed optimization that reproducibly outperforms the production baseline in the defended regime, plus the benchmark report and portfolio README.",
       "mastery_gate": [
         "implement",
         "test",
-        "explain",
-        "defend"
+        "measure",
+        "explain"
       ],
-      "objective": null,
-      "exact_inputs": null,
-      "architecture_config": null,
-      "abstraction_level": null,
+      "objective": "Pick one optimization from the menu, implement it, and show a reproducible win over the production baseline in the defended regime; ship a benchmark report and portfolio README. Menu (choose one): KV quantization (KIVI 2-bit) for more concurrency/longer context in fixed memory; KV eviction / attention sinks (H2O, StreamingLLM) for bounded long-context KV; unified-memory KV offload (FlexGen-style, Apple-Silicon-native, no PCIe penalty); or speculative decoding (EAGLE / self-speculative) for single-stream latency.",
+      "exact_inputs": "The previous module's artifact, a small model (Qwen2.5-0.5B / Llama-3.2-1B), the frozen oracle, and the seeded traces; the production baselines for benchmark modules.",
+      "architecture_config": "target regime (from W9-10): Apple Silicon, memory-constrained (16GB), low-to-moderate concurrency\noptimization (pick one):\n  - KV quantization (KIVI 2-bit): ~4x KV in fixed memory -> more concurrency / longer context than baselines\n  - KV eviction / attention sinks (H2O / StreamingLLM): bounded KV for long/streaming contexts\n  - unified-memory KV offload (FlexGen-style on Apple unified memory, no PCIe penalty): larger effective KV than VRAM-bound engines\n  - speculative decoding (EAGLE / self-speculative): single-stream latency win where vLLM spec-decode is unavailable (Apple Silicon)\nwin condition: a reproducible metric where the engine beats the production baseline in the target regime, with parity/quality preserved\n",
+      "abstraction_level": "Own the optimization implementation and the head-to-head measurement against the production baseline in the target regime. Delegate kernels to PyTorch/FlashInfer; an optional hand-written CUDA/Metal kernel is a stretch. Quality must be preserved (parity or a bounded quality delta).",
       "implementation_steps": [
-
+        "Choose the optimization from the menu based on the W9-10 target regime and your hardware.",
+        "Implement it on the engine; verify output quality is preserved (parity or a measured, bounded delta).",
+        "Re-run the benchmark in the target regime; show a reproducible win over the production baseline.",
+        "Write the benchmark report and portfolio README; (optional stretch) hand-write one CUDA/Metal kernel on a hot path."
       ],
       "execution_ladder": [
 
       ],
       "training_phases": null,
       "starter_interfaces": [
-
+        "engine/opt/             # the chosen optimization (kv_quant / evict / offload / spec)",
+        "bench/win.py            # head-to-head vs baseline in the target regime",
+        "docs/report.md          # the outperformance result + methodology",
+        "README.md               # portfolio entry point"
       ],
-      "exit_gate": null,
+      "exit_gate": "The optimization preserves quality and produces a reproducible win over the production baseline in the defended regime; the report and README tell the end-to-end story from checked-in configs.",
       "official_api_docs": [
 
       ],
       "reference_implementations": [
-
+        {
+          "title": "KIVI (2-bit KV cache)",
+          "url": "https://arxiv.org/abs/2402.02750",
+          "note": "KV quantization for more concurrency / longer context"
+        },
+        {
+          "title": "H2O (Heavy-Hitter Oracle)",
+          "url": "https://arxiv.org/abs/2306.14048",
+          "note": "KV eviction for bounded long-context"
+        },
+        {
+          "title": "StreamingLLM (attention sinks)",
+          "url": "https://arxiv.org/abs/2309.17453",
+          "note": "bounded KV for streaming / long contexts"
+        },
+        {
+          "title": "EAGLE-2",
+          "url": "https://arxiv.org/abs/2406.16858",
+          "note": "speculative decoding for single-stream latency"
+        },
+        {
+          "title": "FlexGen",
+          "url": "https://arxiv.org/abs/2303.06865",
+          "note": "offloading for memory-constrained serving"
+        }
       ],
       "further_reading": [
         {
-          "resource_id": "neetcode-roadmap",
-          "name": "NeetCode Roadmap",
-          "url": "https://neetcode.io/roadmap",
-          "section": "NeetCode 150 core (~70 timed problems)",
-          "reason": "primary resource for this deferred unit"
+          "resource_id": "gpu-mode",
+          "name": "GPU Mode",
+          "url": "https://github.com/gpu-mode",
+          "section": "GPU Mode lectures — https://github.com/gpu-mode/lectures",
+          "reason": "optional hand-written kernel"
+        },
+        {
+          "resource_id": "mlsys-book",
+          "name": "MLSys Book",
+          "url": "https://mlsysbook.ai/",
+          "section": "Optimization & serving — https://mlsysbook.ai/",
+          "reason": "KV optimization and benchmarking"
         }
       ],
       "primary_sources": [
-
-      ],
-      "primary_resource": {
-        "resource_id": "neetcode-roadmap",
-        "name": "NeetCode Roadmap",
-        "url": "https://neetcode.io/roadmap",
-        "section": "NeetCode 150 core (~70 timed problems)"
-      }
-    },
-    {
-      "lesson_id": "lesson-sysdesign",
-      "unit_id": "unit-sysdesign",
-      "title": "Fall · System design reps",
-      "phase_id": "phase-interview-gates",
-      "section_id": "section-gates",
-      "status": "deferred",
-      "estimated_hours": 16,
-      "problem": "6 timed design one-pagers; answer ML-infra prompts from your serving project + MLSys ops chapters.",
-      "why_it_matters": "Fall interview gate; the serving project becomes the ML-infra design answer.",
-      "concepts": [
-        "Fall · System design reps"
-      ],
-      "build_it": "6 timed design one-pagers; answer ML-infra prompts from your serving project + MLSys ops chapters.",
-      "use_it": "Per-rep rubric + one scored mock.",
-      "ship_it": "6 design one-pagers grounded in the built service.",
-      "exercises": [
         {
-          "exercise_id": "ex-sysdesign-1",
-          "type": "project",
-          "prompt": "6 timed design one-pagers; answer ML-infra prompts from your serving project + MLSys ops chapters.",
-          "completion_gate": "Per-rep rubric + one scored mock."
+          "title": "KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache",
+          "url": "https://arxiv.org/abs/2402.02750",
+          "reason": "the memory-constrained outperformance option"
         }
       ],
-      "tests_and_measurements": [
-        "Per-rep rubric + one scored mock."
-      ],
-      "proof_artifact": "6 design one-pagers grounded in the built service.",
-      "mastery_gate": [
-        "implement",
-        "explain",
-        "defend"
-      ],
-      "objective": null,
-      "exact_inputs": null,
-      "architecture_config": null,
-      "abstraction_level": null,
-      "implementation_steps": [
-
-      ],
-      "execution_ladder": [
-
-      ],
-      "training_phases": null,
-      "starter_interfaces": [
-
-      ],
-      "exit_gate": null,
-      "official_api_docs": [
-
-      ],
-      "reference_implementations": [
-
-      ],
-      "further_reading": [
-        {
-          "resource_id": "hello-interview",
-          "name": "Hello Interview: System Design in a Hurry",
-          "url": "https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction",
-          "section": "Hello Interview framework + 6 timed designs; ground inference-serving answers in your own C++ service",
-          "reason": "primary resource for this deferred unit"
-        }
-      ],
-      "primary_sources": [
-
-      ],
       "primary_resource": {
-        "resource_id": "hello-interview",
-        "name": "Hello Interview: System Design in a Hurry",
-        "url": "https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction",
-        "section": "Hello Interview framework + 6 timed designs; ground inference-serving answers in your own C++ service"
+        "resource_id": "gpu-mode",
+        "name": "GPU Mode",
+        "url": "https://github.com/gpu-mode/lectures",
+        "section": "GPU Mode lectures + KV-optimization papers for the chosen optimization"
       }
     }
   ],
@@ -1642,7 +1407,7 @@
   "units": [
     {
       "unit_id": "unit-w1-2-engine",
-      "title": "Weeks 1-2 · Minimal inference engine + reference oracle",
+      "title": "Weeks 1-2 · Minimal engine + multi-device benchmark harness",
       "signal_ids": [
         "sig-llm-inference",
         "sig-backend-apis"
@@ -1658,7 +1423,7 @@
         "market": 0.5,
         "xiaohongshu": 0.5
       },
-      "personal_roadmap_roi": 68.0,
+      "personal_roadmap_roi": 69.0,
       "evidence_maturity": 1,
       "prerequisites": [
 
@@ -1696,7 +1461,7 @@
         "market": 0.5,
         "xiaohongshu": 0.5
       },
-      "personal_roadmap_roi": 68.0,
+      "personal_roadmap_roi": 69.0,
       "evidence_maturity": 1,
       "prerequisites": [
         "unit-w1-2-engine"
@@ -1718,7 +1483,7 @@
     },
     {
       "unit_id": "unit-w5-6-batching",
-      "title": "Weeks 5-6 · Continuous batching (Orca)",
+      "title": "Weeks 5-6 · Continuous batching (Orca) + admission control",
       "signal_ids": [
         "sig-llm-inference",
         "sig-os-concurrency"
@@ -1734,7 +1499,7 @@
         "market": 0.5,
         "xiaohongshu": 0.5
       },
-      "personal_roadmap_roi": 68.0,
+      "personal_roadmap_roi": 69.0,
       "evidence_maturity": 1,
       "prerequisites": [
         "unit-w3-4-kv"
@@ -1756,7 +1521,7 @@
     },
     {
       "unit_id": "unit-w7-8-prefill",
-      "title": "Weeks 7-8 · Chunked prefill (Sarathi-Serve)",
+      "title": "Weeks 7-8 · Chunked prefill (Sarathi-Serve) + latency-throughput Pareto",
       "signal_ids": [
         "sig-llm-inference",
         "sig-os-concurrency"
@@ -1772,7 +1537,7 @@
         "market": 0.5,
         "xiaohongshu": 0.5
       },
-      "personal_roadmap_roi": 68.0,
+      "personal_roadmap_roi": 69.0,
       "evidence_maturity": 1,
       "prerequisites": [
         "unit-w5-6-batching"
@@ -1793,46 +1558,8 @@
       ]
     },
     {
-      "unit_id": "unit-w9-10-slo",
-      "title": "Weeks 9-10 · Latency-throughput Pareto + SLO-aware admission",
-      "signal_ids": [
-        "sig-llm-inference",
-        "sig-os-concurrency"
-      ],
-      "lane": "project_proof",
-      "track": "phase-inference-scheduler",
-      "status": "must_do_now",
-      "progression_level": "specialization",
-      "market_roi_score": 38.4,
-      "xiaohongshu_signal_score": 81.3,
-      "overall_priority_score": 59.8,
-      "source_weights": {
-        "market": 0.5,
-        "xiaohongshu": 0.5
-      },
-      "personal_roadmap_roi": 68.0,
-      "evidence_maturity": 1,
-      "prerequisites": [
-        "unit-w7-8-prefill"
-      ],
-      "resource_id": "ddia",
-      "estimated_hours": 30,
-      "mastery_gate": [
-        "implement",
-        "test",
-        "measure",
-        "explain"
-      ],
-      "defer_reason": null,
-      "lesson_id": "lesson-w9-10-slo",
-      "interview_rounds": [
-        "specialization",
-        "project_deep_dive"
-      ]
-    },
-    {
-      "unit_id": "unit-w11-12-release",
-      "title": "Weeks 11-12 · Benchmark vs vLLM, hardening & portfolio release",
+      "unit_id": "unit-w9-10-benchmark",
+      "title": "Weeks 9-10 · Cross-device benchmark vs vLLM, SGLang, and llama.cpp",
       "signal_ids": [
         "sig-llm-inference",
         "sig-backend-apis"
@@ -1848,12 +1575,50 @@
         "market": 0.5,
         "xiaohongshu": 0.5
       },
-      "personal_roadmap_roi": 68.0,
+      "personal_roadmap_roi": 69.0,
       "evidence_maturity": 1,
       "prerequisites": [
-        "unit-w9-10-slo"
+        "unit-w7-8-prefill"
       ],
       "resource_id": "mlsys-book",
+      "estimated_hours": 30,
+      "mastery_gate": [
+        "implement",
+        "test",
+        "measure",
+        "explain"
+      ],
+      "defer_reason": null,
+      "lesson_id": "lesson-w9-10-benchmark",
+      "interview_rounds": [
+        "specialization",
+        "project_deep_dive"
+      ]
+    },
+    {
+      "unit_id": "unit-w11-12-optimize",
+      "title": "Weeks 11-12 · Outperformance optimization + portfolio release",
+      "signal_ids": [
+        "sig-llm-inference",
+        "sig-quantization-optimization"
+      ],
+      "lane": "project_proof",
+      "track": "phase-inference-scheduler",
+      "status": "must_do_now",
+      "progression_level": "specialization",
+      "market_roi_score": 38.4,
+      "xiaohongshu_signal_score": 81.3,
+      "overall_priority_score": 59.8,
+      "source_weights": {
+        "market": 0.5,
+        "xiaohongshu": 0.5
+      },
+      "personal_roadmap_roi": 69.0,
+      "evidence_maturity": 1,
+      "prerequisites": [
+        "unit-w9-10-benchmark"
+      ],
+      "resource_id": "gpu-mode",
       "estimated_hours": 26,
       "mastery_gate": [
         "implement",
@@ -1862,124 +1627,66 @@
         "explain"
       ],
       "defer_reason": null,
-      "lesson_id": "lesson-w11-12-release",
+      "lesson_id": "lesson-w11-12-optimize",
       "interview_rounds": [
         "specialization",
         "project_deep_dive"
-      ]
-    },
-    {
-      "unit_id": "unit-dsa",
-      "title": "Fall · Timed DSA (NeetCode)",
-      "signal_ids": [
-        "sig-dsa",
-        "sig-system-design"
-      ],
-      "lane": "engineering_capability",
-      "track": "phase-interview-gates",
-      "status": "deferred",
-      "progression_level": "foundation",
-      "market_roi_score": 59.9,
-      "xiaohongshu_signal_score": 0.0,
-      "overall_priority_score": 29.9,
-      "source_weights": {
-        "market": 0.5,
-        "xiaohongshu": 0.5
-      },
-      "personal_roadmap_roi": 47.5,
-      "evidence_maturity": 2,
-      "prerequisites": [
-
-      ],
-      "resource_id": "neetcode-roadmap",
-      "estimated_hours": 40,
-      "mastery_gate": [
-        "implement",
-        "test",
-        "explain",
-        "defend"
-      ],
-      "defer_reason": "Fall interview gate (after the summer build window); the AI-Infra loops still require a coding screen.",
-      "lesson_id": "lesson-dsa",
-      "interview_rounds": [
-
-      ]
-    },
-    {
-      "unit_id": "unit-sysdesign",
-      "title": "Fall · System design reps",
-      "signal_ids": [
-        "sig-system-design",
-        "sig-distributed-systems"
-      ],
-      "lane": "engineering_capability",
-      "track": "phase-interview-gates",
-      "status": "deferred",
-      "progression_level": "intermediate",
-      "market_roi_score": 53.0,
-      "xiaohongshu_signal_score": 0.0,
-      "overall_priority_score": 26.5,
-      "source_weights": {
-        "market": 0.5,
-        "xiaohongshu": 0.5
-      },
-      "personal_roadmap_roi": 52.3,
-      "evidence_maturity": 1,
-      "prerequisites": [
-        "unit-p2-reliability"
-      ],
-      "resource_id": "hello-interview",
-      "estimated_hours": 16,
-      "mastery_gate": [
-        "implement",
-        "explain",
-        "defend"
-      ],
-      "defer_reason": "Fall interview gate; the serving project becomes the ML-infra design answer.",
-      "lesson_id": "lesson-sysdesign",
-      "interview_rounds": [
-
       ]
     }
   ],
   "projects": [
     {
-      "project_id": "proj-elenkhos-serve",
-      "title": "ElenkhosServe: a from-scratch LLM inference engine and scheduler study",
+      "project_id": "proj-inference-engine",
+      "title": "A from-scratch LLM inference engine, benchmarked against production and optimized to win in a regime",
       "decision": "active_primary",
-      "positioning_statement": "Not a model and not a vLLM wrapper: ElenkhosServe is a from-scratch inference engine built to go deep on the scheduling stack — paged KV cache, Orca continuous batching, and Sarathi-Serve chunked prefill — and to characterize the latency-throughput frontier against vLLM.",
+      "positioning_statement": "Not a model and not a vLLM wrapper: a from-scratch inference engine, benchmarked head-to-head against vLLM, SGLang, and llama.cpp across cloud CUDA and Apple Silicon, then optimized with a paper-backed technique to outperform the production baseline in a defended regime (Apple Silicon, memory-constrained, low-to-moderate concurrency).",
       "user_advantage": [
         "Reuses Jetson/TensorRT/CUDA experience: constrained memory and latency profiles, paged KV, and measured throughput tradeoffs.",
         "Reuses AWS reliability experience: admission control, backpressure, overload behavior, timeouts, and graceful shutdown.",
-        "Reuses Python/C systems debugging: a from-scratch engine with parity oracles and reproducible benchmarks."
+        "Apple Silicon advantage: an M4 16GB is the exact regime where vLLM/SGLang are weak or absent, so the outperformance story is credible."
       ],
-      "research_question": "How close can a from-scratch Python inference engine get to vLLM throughput when it implements paged KV, Orca continuous batching, and Sarathi-Serve chunked prefill, and how do those mechanisms move the measured latency-throughput Pareto frontier?",
+      "research_question": "Across vLLM, SGLang, and llama.cpp on cloud CUDA and Apple Silicon, in which regime can a from-scratch engine — with paged KV, continuous batching, chunked prefill, and one paper-backed optimization — match or beat the production baseline, and by how much?",
       "what_you_will_implement": [
-        "Weeks 1-2: Minimal inference engine + reference oracle — A minimal inference engine with a streaming API, a frozen deterministic oracle, and a reproducible benchmark harness.",
-        "Weeks 3-4: Paged KV cache (PagedAttention) — A PagedAttention-style KV cache with a contiguous-vs-paged memory study and oracle parity.",
-        "Weeks 5-6: Continuous batching (Orca) — An Orca-style continuous-batching scheduler with oracle parity and a throughput study vs static batching.",
-        "Weeks 7-8: Chunked prefill (Sarathi-Serve) — A Sarathi-Serve chunked-prefill scheduler with a TTFT/TBT interference study and a defended token-budget default.",
-        "Weeks 9-10: Latency-throughput Pareto + SLO-aware admission — A latency-throughput Pareto characterization plus an SLO-aware admission scheduler that beats FIFO on goodput under overload.",
-        "Weeks 11-12: Benchmark vs vLLM, hardening & portfolio release — A reproducible ElenkhosServe-vs-vLLM-vs-llama.cpp benchmark, a hardened service, and an architecture report + portfolio README."
+        "Weeks 1-2: Minimal engine + multi-device benchmark harness — A minimal engine with a streaming API, a frozen oracle, and a cross-device (Apple Silicon + CUDA) benchmark harness.",
+        "Weeks 3-4: Paged KV cache (PagedAttention) — A PagedAttention-style KV cache with a contiguous-vs-paged memory study on both devices and oracle parity.",
+        "Weeks 5-6: Continuous batching (Orca) + admission control — An Orca-style continuous-batching scheduler with admission control, oracle parity, and a throughput/goodput study on both devices.",
+        "Weeks 7-8: Chunked prefill (Sarathi-Serve) + latency-throughput Pareto — A Sarathi-Serve chunked-prefill scheduler and a per-device latency-throughput Pareto characterization with a stated best regime.",
+        "Weeks 9-10: Cross-device benchmark vs vLLM, SGLang, and llama.cpp — A reproducible cross-device benchmark matrix vs vLLM, SGLang, and llama.cpp, with a defended target regime.",
+        "Weeks 11-12: Outperformance optimization + portfolio release — One paper-backed optimization that reproducibly outperforms the production baseline in the defended regime, plus the benchmark report and portfolio README."
       ],
       "problem_index": [
-        "Weeks 1-2 Minimal inference engine + reference oracle",
+        "Weeks 1-2 Minimal engine + multi-device benchmark harness",
         "Weeks 3-4 Paged KV cache (PagedAttention)",
-        "Weeks 5-6 Continuous batching (Orca)",
-        "Weeks 7-8 Chunked prefill (Sarathi-Serve)",
-        "Weeks 9-10 Latency-throughput Pareto + SLO-aware admission",
-        "Weeks 11-12 Benchmark vs vLLM, hardening & portfolio release"
+        "Weeks 5-6 Continuous batching (Orca) + admission control",
+        "Weeks 7-8 Chunked prefill (Sarathi-Serve) + latency-throughput Pareto",
+        "Weeks 9-10 Cross-device benchmark vs vLLM, SGLang, and llama.cpp",
+        "Weeks 11-12 Outperformance optimization + portfolio release"
       ],
       "implementation_references": [
         {
           "title": "nano-vllm",
           "url": "https://github.com/GeeeekExplorer/nano-vllm",
-          "use": "~1.2k-line pure-Python vLLM core; the design lineage for the engine"
+          "use": "~1.2k-line pure-Python vLLM core; design lineage"
         },
         {
           "title": "mini-sglang",
           "url": "https://github.com/sgl-project/mini-sglang",
-          "use": "compact SGLang reimplementation; reference for radix/prefix cache and scheduler"
+          "use": "~5k-line SGLang reimplementation; radix cache + scheduler"
+        },
+        {
+          "title": "mini-sglang design walkthrough (LMSYS blog)",
+          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
+          "use": "RadixAttention, overlap scheduling, chunked prefill"
+        },
+        {
+          "title": "tiny-llm (skyzh)",
+          "url": "https://skyzh.github.io/tiny-llm/",
+          "use": "from-scratch serving course in MLX on Apple Silicon (Qwen3)"
+        },
+        {
+          "title": "tiny-llm repo (skyzh)",
+          "url": "https://github.com/skyzh/tiny-llm",
+          "use": "source for the tiny-llm course"
         },
         {
           "title": "Orca (OSDI'22)",
@@ -1992,372 +1699,42 @@
           "use": "chunked prefill and stall-free batching"
         },
         {
-          "title": "tiny-llm repo (skyzh)",
-          "url": "https://github.com/skyzh/tiny-llm",
-          "use": "from-scratch serving-engine course (MLX, Mac, Qwen3) paralleling this project"
-        },
-        {
-          "title": "mini-sglang design walkthrough (LMSYS blog)",
-          "url": "https://www.lmsys.org/blog/2025-12-17-minisgl",
-          "use": "RadixAttention, overlap scheduling, and chunked prefill explained in ~5k lines of Python"
-        },
-        {
           "title": "Outcome School — AI & Machine Learning",
           "url": "https://outcomeschool.com/program/ai-and-machine-learning",
-          "use": "curriculum reference: LLM internals, vLLM serving, and 'Design an LLM Inference Platform' system design"
-        }
-      ],
-      "design_principles": [
-        "Minimal and hackable first (Karpathy mindset): build the smallest readable thing that proves the idea before reaching for a framework. minBPE/minGPT/nanoGPT supply the compact tokenizer-model-trainer pattern; llm.c supplies reference-then-optimized parity; llama2.c supplies the understandable single-request inference path; nanochat supplies the cohesive end-to-end, single-node, cost-aware harness.",
-        "Reference then optimize: every performance-sensitive component starts as a readable fixture path, then moves to exactly one scale path. Eager attention precedes SDPA/compile, pedagogical AdamW precedes fused AdamW, a synchronous C++ request precedes streaming/scheduling, and standalone DPO math precedes TRL. Output, gradient, loss, or response parity gates every replacement.",
-        "Implement-and-explain, never import-and-call (CS336 deep dive): write the tokenizer, attention, training loop, scheduler, and admission control from scratch and profile them; delegate only the heavy machinery (PyTorch autograd, llama.cpp kernels, TRL/PEFT QLoRA) after the core is understood and measured.",
-        "Build → Use → Reflect (TinyTorch pedagogy): every phase builds one component on a tiny fixture, uses it in the accumulating Elenkhos pipeline, and records a short design/measurement reflection before promotion.",
-        "Cognitive complexity is a budget: no plugin systems, model factories, generic DAG engine, Kubernetes, multiple serving runtimes, or configuration branches unrelated to the frozen experiment matrix. A reviewer must be able to trace the production path from one run script.",
-        "Every claim carries a number: analytical-vs-observed memory, profiler attribution, nine-run scaling fits, and paired-bootstrap confidence intervals — no asserted speedup or quality win ships without measurement and at least one neutral or failed result on record.",
-        "12 weeks is the first forcing function: ~204 committed hours (Jun 22 – Sep 11, 20 h/week) fix scope to what ships with proof in the window; anything that does not fit is an explicit cut or later, never silent scope creep.",
-        "$1000 is the second forcing function: distill — never pretrain — the 1.7B product model; rent one 24/48GB GPU only in pre-costed bounded runs (≤USD50, ≤20h, ≥20% VRAM headroom each); the 16GB MacBook Pro M4 is both the dev box and the real constrained-serving target, with kernels delegated to llama.cpp.",
-        "Cheap, reproducible speedruns (nanochat ethos): every run is pre-registered, version-pinned, and re-runnable from a machine-readable config; reproducibility is part of the proof, not an afterthought.",
-        "Local-first CS336 progression: use fixtures, one-batch overfit, debug-2m, and a one-profile IsoFLOPs rehearsal on the 16GB Mac to validate the exact production path. Rent Runpod only after deterministic data, resume parity, accounting, evaluation, fit code, export, and storage gates pass; local results are correctness evidence, not scaling conclusions."
-      ],
-      "model_strategy": {
-        "summary": "Post-training is needed only for the 1.7B distillation model. The 70M lab model is pretraining-only, and the teacher is inference-only — pretraining and post-training are deliberately split across two models.",
-        "models": [
-          {
-            "name": "Elenkhos-70M-Lab (71.2M params, built from scratch)",
-            "training": "Pretraining only — no SFT or DPO",
-            "purpose": "The small-model pretraining and systems experience, and the only model trained from scratch: byte-level 16K BPE, the decoder, a profiled resumable training loop, and the nine-run A3 scaling study. Its explicit value is a pretraining-quality baseline that proves the training system works, the data-mixture and MHA-vs-GQA ablation target, the A3 scaling-law test subject, the profiler/memory-model/checkpoint artifact, a weak-reasoning negative control whose held-out scores set the floor the distilled 1.7B must clear, and a small release-manifest and reference-serving fixture that exercises ElenkhosServe export/quantization/qualification before the 1.7B. At 71M it is a systems artifact, not a reasoning product, so it is never post-trained."
-          },
-          {
-            "name": "Elenkhos-1.7B (frozen Qwen3-1.7B)",
-            "training": "Post-training only — QLoRA SFT then DPO; never pretrained",
-            "purpose": "The reasoning product. Pretraining a base capable enough to reason is impossible under the 12-week / $1000 ceiling, so reasoning is distilled into a frozen Qwen3-1.7B from verified teacher trajectories. This is where the research question — reasoning as a cognitive ability — is actually tested, gated, and served."
-          },
-          {
-            "name": "Teacher (Qwen3-32B-AWQ vs 14B-AWQ, selected by the 200-item pilot)",
-            "training": "Inference only — not trained",
-            "purpose": "Generates the verified reasoning trajectories the 1.7B student learns from. The 200-item pilot picks between 32B-AWQ and 14B-AWQ on measured acceptance rate, throughput, and projected total cost; the cheaper teacher that clears the acceptance floor wins. Run in bounded pre-costed batches on a rented Pod (24GB for 14B-AWQ, 48GB for 32B-AWQ)."
-          }
-        ],
-        "baseline_matrix": [
-          {
-            "benchmark": "Held-out FineWeb-Edu loss/perplexity",
-            "lab_role": "From-scratch general-language floor and training-system sanity check",
-            "product_comparison": "Qwen3-1.7B base, SFT, and DPO under the same text/scoring adapter"
-          },
-          {
-            "benchmark": "Held-out philosophy loss/perplexity",
-            "lab_role": "Domain-mixture benefit and overfit check",
-            "product_comparison": "Base/SFT/DPO; report that tokenizer/model classes differ"
-          },
-          {
-            "benchmark": "Fixed-few-shot ElenkhosBench",
-            "lab_role": "Intentionally weak Socratic-policy negative control",
-            "product_comparison": "Non-thinking base, native thinking, prompt-only, answer-only SFT, trajectory SFT, DPO"
-          },
-          {
-            "benchmark": "FOLIO",
-            "lab_role": "External logical-validity floor",
-            "product_comparison": "The same six Qwen baselines"
-          },
-          {
-            "benchmark": "Throughput, peak memory, KV bytes/token",
-            "lab_role": "Small reference-serving fixture and GQA evidence",
-            "product_comparison": "Q8_0/Q4_K_M Qwen releases on qualified hardware profiles; no cross-hardware speed claim"
-          }
-        ]
-      },
-      "spec_path": "docs/elenkhos-project-spec.md",
-      "starter_kit_path": "docs/elenkhos-starter-kit.md",
-      "model_family": {
-        "umbrella": "Elenkhos",
-        "systems_model": "Elenkhos-70M-Lab",
-        "sft_candidate": "Elenkhos-1.7B-SFT",
-        "dpo_candidate": "Elenkhos-1.7B-DPO",
-        "benchmark": "ElenkhosBench",
-        "runtime": "ElenkhosServe"
-      },
-      "student_architecture": "Qwen3-1.7B revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e: 28 decoder layers, d_model 2048, SwiGLU intermediate 6144, 16 query heads, 8 KV heads, head dim 128, tied embeddings, vocabulary 151,936, configured max positions 40,960 and RoPE theta 1,000,000; project sequence cap 2,048.",
-      "dataset_recipe": "Use staged 2K and 4K accepted examples, expanding to the 8K cap (30% Socratic, 25% reconstruction, 20% dialectic, 25% fallacy) only when the 4K learning-curve gate passes; 80/10/10 grouped split; 4K hard-case preference pairs default and 8K maximum. The 70M lab pretraining stream uses FineWeb-Edu plus every eligible unique training document from nine pinned Gutenberg editions once (expected 2M-4M tokens, maximum 10%). Hold out at least two authors and exclude SEP/IEP/contemporary prose.",
-      "training_recipe": "Pretrain only the 71,205,760-parameter lab model; do not pretrain Qwen3-1.7B. Develop locally first on the MacBook Pro M4 16GB: fixture-100k, local-pretrain-10m, micro-117k, debug-2m, one local 1.0e14-FLOP IsoFLOPs rehearsal, cached 32-row distillation fixtures, and 128-row SFT/DPO objective smoke tests. Qwen3-0.6B may be used only as the local chat-template/PEFT/objective compatibility substitute; the product remains Qwen3-1.7B. Run canonical pretraining, teacher generation, SFT, and DPO on one pinned Runpod CUDA environment only after the local promotion gate; Colab remains disposable smoke-only. Select the teacher from the 200-item pilot: compare Qwen3-32B-AWQ against Qwen3-14B-AWQ on measured acceptance rate, throughput, and projected total cost, and pick the cheaper teacher that clears the acceptance floor rather than defaulting to 32B; discard raw thinking text. Run QLoRA SFT and DPO on a 24GB Pod first; move DPO to a 48GB Pod only on measured OOM, insufficient VRAM headroom, or lower projected total cost. Pin TRL 1.6.0 / PEFT 0.19.0. Multi-GPU DDP is stretch-only. Compare six baselines including native Qwen3 thinking.",
-      "training_pipeline": {
-        "summary": "The from-scratch Elenkhos-70M-Lab run splits in two: prove every moving part is correct for free on the Mac, then spend cloud GPU only on the claims that actually need scale. Both phases run the same code on the same materialized shards — only the corpus size changes.",
-        "data_flow": [
-          "Stream — open the pinned dataset (FineWeb-Edu sample-10BT) with streaming=True; never download the 6.19TB repository.",
-          "Select — keep rows by sha256(document_id || seed) so every rerun picks the same documents.",
-          "Materialize — write normalized compressed Parquet plus an immutable selected-document manifest (scripts/materialize_data.py).",
-          "Tokenize — encode the frozen snapshot into uint16 token shards and document-boundary indices with checksums (scripts/tokenize_data.py).",
-          "Train — read only local or Runpod-volume mmap shards; training never touches a live remote iterator (scripts/train.py)."
-        ],
-        "phases": [
-          {
-            "name": "Phase 1 — Sanity check (Mac, free)",
-            "where": "16GB MacBook Pro M4, CPU/MPS. No paid Pod yet.",
-            "data": "fixture-100k and a deterministic 10M-token slice (local-pretrain-10m), materialized and tokenized by the exact code path the cloud run uses.",
-            "runs": "micro-117k primitive and one-batch overfit, debug-2m for 1M tokens, and one C=1.0e14 three-model A3 harness rehearsal.",
-            "proves": "Primitive parity, one-batch overfit, deterministic resume, declining loss, and a working run-card/fit pipeline. No scaling-law or quality claim is made here.",
-            "gate": "All L0-L4 promotion checks pass, document hashes reproduce, resume parity holds, and project disk stays <=60GB with >=100GB host free."
-          },
-          {
-            "name": "Phase 2 — Scale (cloud GPU, paid)",
-            "where": "One pinned 24GB Runpod CUDA Pod (RTX 4090/3090/A5000-class). Colab is disposable smoke only.",
-            "data": "web-50m and domainmix-50m ablation shards, then domainmix-300m for the final run — same selection, filtering, and tokenizer, just a larger corpus.",
-            "runs": "A 5M-token GPU pilot, the nine-config A3 study with the third budget held out, 3x5M LR pilots, 2x50M MHA/GQA and web/domain ablations, then the 300M final run (~742M total token passes).",
-            "proves": "A warmed timing matrix, Nsight traces, a held-out scaling prediction with measured error, and the final 70M checkpoint (or a documented 100M fallback).",
-            "gate": "The 5M-token benchmark must project <=20 GPU-hours, <=USD 50, and >=20% VRAM headroom before the 300M run launches."
-          }
-        ]
-      },
-      "execution_pipelines": [
-        {
-          "pipeline_id": "pipeline-storage",
-          "title": "0 · Local-first workspace and durable storage",
-          "train_or_not": "No training",
-          "data": "Code/configs in Git; private raw audit; sanitized selected text/token shards; model caches; checkpoints; adapters; GGUF releases; benchmark JSONL.",
-          "storage": "Mac project cap 60GB and never consume the last 100GB of the 512GB internal SSD: 4GB data, 2GB token shards, 10GB HF cache, 10GB checkpoints, 3GB adapters/fixtures, 12GB GGUF/build/benchmarks, 4GB temporary files, 15GB project headroom. Do not cache 14B/32B teachers locally. Provision Runpod storage only after promotion: 60GB for the 14B path; 80GB only if the measured pilot selects the 32B teacher or preflight requires it.",
-          "compute": "Mac CPU/MPS first; no paid Pod during unit, data-contract, debug-training, objective-parity, or export smoke work.",
-          "abstraction": "Use Git for code/configs, Hugging Face Hub for reviewed public artifacts, and one plain filesystem layout for canonical runs. Do not add S3/Kubernetes/MLflow unless an actual failure requires them.",
-          "selection_rule": "Before local materialization require >=100GB host free and <=60GB projected project use. Before a paid run require the complete local promotion gate and >=15GB free on the Runpod volume. Never keep both teacher caches after the pilot.",
-          "artifacts": "Git: code/manifests/reports. Hugging Face dataset/model repos: sanitized dataset and final adapters/releases after review."
-        },
-        {
-          "pipeline_id": "pipeline-data-pretrain",
-          "title": "1 · Data audit and pretraining corpus",
-          "train_or_not": "CPU preprocessing; the quality classifier is a small logistic-regression or fastText training job",
-          "data": "500-1,000 documents from one pinned Common Crawl WET path; 5K Wikipedia-reference positives + 5K random-CC negatives; fixture-100k; local-pretrain-10m = 9M FineWeb-Edu + <=1M unique philosophy tokens; streamed FineWeb-Edu sample-10BT; nine edition-pinned Gutenberg works.",
-          "storage": "1GB-3GB compressed selected text and metadata; uint16 token arrays: 20MB/10M, 200MB/100M, 600MB/300M.",
-          "compute": "MacBook CPU/16GB RAM first. Only move preprocessing to an 8-16 vCPU Pod when measured local wall time exceeds the deadline; stream FineWeb-Edu and never download the 6.19TB repository.",
-          "abstraction": "Own selection, filtering, deduplication, manifests, and splits in Python; use Hugging Face Datasets for streaming/Arrow/Parquet and tested libraries for primitives.",
-          "selection_rule": "Measure philosophy yield (expected 2M-4M unique tokens); use it once and fill with FineWeb-Edu. Split by document/work/author before chunking.",
-          "artifacts": "Source manifest, stage yields, classifier audit, token shards, dataset card, contamination report."
-        },
-        {
-          "pipeline_id": "pipeline-lab-pretrain",
-          "title": "2 · From-scratch lab pretraining",
-          "train_or_not": "Yes: only Elenkhos-70M-Lab (71,205,760 parameters); no product-model pretraining",
-          "data": "Local: micro-117k fixtures, debug-2m×1M tokens, and one C=1.0e14 IsoFLOPs rehearsal over the canonical 16K models using local-pretrain-10m. Cloud after promotion: nine exact A3 runs, 3×5M LR pilots, 2×50M MHA/GQA, 2×50M web/domain, and one 300M final run; about 742M canonical training-token passes.",
-          "storage": "About 0.84GB live 70M AdamW model/gradient/optimizer state before activations; keep two rotating full states plus four model-only milestones inside an 8GB checkpoint budget.",
-          "compute": "Mac CPU/MPS for correctness and the bounded rehearsal. Then one 24GB RTX 4090/3090/A5000-class Runpod Pod for canonical profiling and training; Colab only for disposable smoke.",
-          "abstraction": "Custom PyTorch loop and model; delegate autograd, SDPA, compile, and profiler collection. No high-level Trainer, custom CUDA backward, or multi-node stack.",
-          "selection_rule": "No Pod until local data hashes, primitive tests, one-batch overfit, 1M-token debug run, resume parity, local IsoFLOPs config/fit rehearsal, and checkpoint reload pass. Then benchmark 5M tokens; require <=20h, <=USD50, >=20% VRAM headroom.",
-          "artifacts": "Exact accounting, scaling prediction/error, profiler trace, 300M checkpoint or documented 100M fallback, model card."
-        },
-        {
-          "pipeline_id": "pipeline-posttrain",
-          "title": "3 · Teacher generation, QLoRA SFT, and DPO",
-          "train_or_not": "No pretraining; 4-bit adapter training on the frozen 4.07GB Qwen3-1.7B student",
-          "data": "Local: 32 cached/schema-valid teacher rows and 128 SFT + 128 preference rows. Cloud: 200-item teacher pilot; 2K then 4K accepted trajectories, 8K cap only after >=2-point gain; 4K hard-case DPO pairs default, 8K maximum.",
-          "storage": "Teacher caches: 19.34GB 32B-AWQ or 9.99GB 14B-AWQ, deleted after selection; <1GB datasets; ~70MB adapter weights; 6GB working post-training budget.",
-          "compute": "Mac CPU/MPS first for schema, masks, standalone losses, one optimizer step, and Qwen3-0.6B compatibility only; do not run the 14B/32B teacher locally. Teacher generation runs on the Pod the 200-item pilot selects (24GB for 14B-AWQ, 48GB for 32B-AWQ). SFT and DPO run on a 24GB Pod first; DPO moves to a 48GB Pod only on measured OOM, insufficient VRAM headroom, or lower projected total cost.",
-          "abstraction": "Use Transformers/vLLM for teacher inference, Distilabel for orchestration, and version-pinned TRL/PEFT for QLoRA SFT/DPO. Own schemas, verifiers, masks, preference construction, configs, parity tests, evaluation, and promotion.",
-          "selection_rule": "Teacher candidates=ceil(target/pilot_acceptance×1.10). Project cost from measured aggregate generation tokens/s. Stop at 4K if 8K expansion lacks learning-curve evidence.",
-          "artifacts": "Verified dataset, teacher budget report, SFT/DPO adapters, six-baseline evaluation, failure taxonomy."
-        },
-        {
-          "pipeline_id": "pipeline-serving",
-          "title": "4 · Export, local serving, and release qualification",
-          "train_or_not": "No model training",
-          "data": "Frozen ElenkhosBench, 50 deterministic ElenkhosEnv episodes, short/mixed/overload seeded request traces, base/SFT/DPO release manifests.",
-          "storage": "10GB for merged HF releases, Q8_0/Q4_K_M GGUF files, llama.cpp build, raw event JSONL, and reports.",
-          "compute": "MacBook Pro M4 16GB is the deployment target; the same 24GB Runpod Pod provides the vLLM CUDA comparison.",
-          "abstraction": "Use official llama.cpp conversion, quantization, tokenizer, kernels, and KV storage as the sole C++ service backend. Own the release wrapper, request/control plane, scheduler, admission, metrics, canary, rollback, benchmark methodology, and a thin typed Python ElenkhosAgent client. vLLM is comparison-only; no LangChain/LlamaIndex orchestration is required.",
-          "selection_rule": "Choose context and concurrency from observed unified memory. Reject before enqueue when predicted model+KV+overhead+safety margin exceeds the release profile. Keep the application loop to one model, two typed actions, one deterministic environment, and frozen budgets; RAG and multi-agent debate remain later.",
-          "artifacts": "C++20 llama.cpp service, bounded ElenkhosAgent demo, Q8/Q4 table, TTFT/TPOT/goodput report, blocked-release incident, automatic rollback incident."
-        }
-      ],
-      "portfolio_packaging": {
-        "project_count_rule": "One capstone, two repositories, three selectable modules: elenkhos-train, elenkhos-serve, and the bounded ElenkhosAgent application client. Do not present these as three unrelated AI projects.",
-        "ai_resume": "Keep experience at 40-45% and projects at 30-35%. Use one combined Elenkhos entry with 3-4 bullets selected for the posting, plus the measured Jetson/TensorRT project. For AI-software roles emphasize the typed application loop, evals, API, and reliability; for MLE/ML-systems roles emphasize training, profiling, quantization, scheduling, and release qualification.",
-        "swe_resume": "Keep experience at 55-60% and projects at 15-20%. Preserve AWS and Salk detail. Include ElenkhosServe as one systems project with C++, API, concurrency, SLOs, and rollback; omit most training detail unless the posting requests ML.",
-        "interview_rule": "Prepare one two-minute end-to-end capstone overview and one role-specific deep dive. Training, serving, and application are integration layers, not three stories that must receive equal interview time.",
-        "max_project_entries": 2
-      },
-      "starter_scaffolds": [
-        {
-          "title": "elenkhos-train repository skeleton",
-          "language": "text",
-          "code": "elenkhos-train/\n  pyproject.toml\n  Makefile\n  configs/{data,model,train,scaling,posttrain,eval}/\n  schemas/{source-manifest,trajectory,eval-result,release-manifest}.schema.json\n  src/elenkhos/\n    data/{commoncrawl,fineweb,gutenberg,quality_classifier,minhash_dedup}.py\n    tokenizer/{bpe_train,tokenizer,serialization}.py\n    model/{norm,rope,attention,mlp,transformer,accounting}.py\n    training/{batcher,optimizer,schedule,checkpoint,trainer,benchmark}.py\n    scaling/{run_matrix,fit,predict}.py\n    posttrain/{teacher,verifiers,collator,logprobs,dpo_reference,sft,dpo}.py\n    evaluation/{question_policy,argument,fallacy,bootstrap,runner}.py\n    export/{merge_adapter,export_gguf,release_manifest}.py\n  tests/{data,tokenizer,model,training,scaling,posttrain,evaluation}/\n  reports/"
-        },
-        {
-          "title": "elenkhos-serve repository skeleton",
-          "language": "text",
-          "code": "elenkhos-serve/\n  CMakeLists.txt\n  cmake/Dependencies.cmake\n  include/elenkhos/\n    api/{request,response,error}.hpp\n    runtime/{backend,llama_backend,capacity}.hpp\n    scheduler/{queue,admission,batcher}.hpp\n    release/{manifest,qualifier,rollout}.hpp\n  src/{server,api,runtime,scheduler,metrics,release}/\n  tests/{unit,integration,fault,load}/\n  benchmarks/{workloads,run_load.py,compare.py}/\n  clients/{elenkhos_agent.py,session_schema.py}/\n  configs/{server,workloads,releases}/\n  reports/"
-        },
-        {
-          "title": "Required causal-attention adapter test",
-          "language": "python",
-          "code": "def test_attention_is_causal(adapters):\n    q = torch.randn(1, 2, 4, 8)\n    k = torch.randn(1, 2, 4, 8)\n    v = torch.randn(1, 2, 4, 8)\n    allowed = torch.tril(torch.ones(4, 4, dtype=torch.bool))\n\n    baseline = adapters.run_attention(q, k, v, mask=allowed)\n    changed_v = v.clone()\n    changed_v[..., 3, :] += 1000\n    changed = adapters.run_attention(q, k, changed_v, mask=allowed)\n\n    torch.testing.assert_close(\n        baseline[..., :3, :], changed[..., :3, :]\n    )"
-        },
-        {
-          "title": "Minimal C++20 serving build",
-          "language": "cmake",
-          "code": "cmake_minimum_required(VERSION 3.24)\nproject(elenkhos_serve LANGUAGES CXX)\nset(CMAKE_CXX_STANDARD 20)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\n\nadd_library(elenkhos_core\n  src/runtime/llama_backend.cpp\n  src/scheduler/admission.cpp\n  src/scheduler/batcher.cpp\n  src/release/qualifier.cpp)\ntarget_include_directories(elenkhos_core PUBLIC include)\n\nadd_executable(elenkhos-server src/server/main.cpp)\ntarget_link_libraries(elenkhos-server PRIVATE elenkhos_core)\nenable_testing()\nadd_subdirectory(tests)"
-        }
-      ],
-      "starter_repositories": [
-        "stanford-cs336/assignment1-basics",
-        "stanford-cs336/assignment2-systems",
-        "stanford-cs336/assignment3-scaling",
-        "stanford-cs336/assignment4-data",
-        "stanford-cs336/assignment5-alignment",
-        "karpathy/minbpe",
-        "karpathy/minGPT",
-        "karpathy/nanoGPT",
-        "karpathy/llm.c",
-        "karpathy/llama2.c",
-        "karpathy/nanochat",
-        "karpathy/micrograd",
-        "karpathy/nn-zero-to-hero",
-        "harvard-edge/cs249r_book",
-        "huggingface/trl",
-        "huggingface/peft",
-        "ggml-org/llama.cpp"
-      ],
-      "experiment_matrix": [
-        "CS336 A3-lite: three compute budgets x exact 10.69M/27.53M/71.21M configurations on one frozen 16K tokenizer; compute D from measured non-embedding N, fit on the first two budgets, and test one pre-registered prediction on the third",
-        "50M-token web vs measured-unique-philosophy domain mixture on small-25m-gqa",
-        "small-28m-mha (6/6) vs small-25m-gqa (6/2); final lab GQA 10/5",
-        "untouched non-thinking vs untouched native-thinking vs prompt-only vs answer-only SFT vs trajectory SFT vs DPO",
-        "Q8 vs Q4 and FIFO vs admission control under identical traces",
-        "ElenkhosEnv: 50 deterministic hidden-state episodes comparing required-slot efficiency, question cost, premature answers, and terminal correctness",
-        "Application qualification: the same frozen ElenkhosAgent sessions across base/SFT/DPO and direct/overload/timeout cases"
-      ],
-      "cs336_contract": [
-        "A1 required: byte BPE/tokenizer, Transformer primitives, MHA then GQA, accounting, AdamW, schedule, clipping, mmap loader, atomic resume, decoding, LR/batch experiments",
-        "A2 required: scale-11m and 70M across contexts 128/256/512, forward/forward-backward/train-step modes, 5 warmups + 10 synchronized measurements, FP32/BF16, Nsight traces, analytical-vs-measured memory, activation checkpointing, SDPA and torch.compile; custom FlashAttention backward is written-only",
-        "A3 required: nine bounded runs across three budgets and three sizes, fitted minima, sensitivity analysis, and one third-budget pre-registered prediction",
-        "A4 required: CS336 fixtures plus 500-1,000 raw Common Crawl documents, language/PII/harm/quality stages, a 10K-example quality classifier, exact/MinHash dedup, audits, and throughput projection",
-        "A5 required: prompt parser baseline, completion masks/log probabilities, inspected SFT data, standalone DPO loss parity with TRL, six-baseline evaluation including native thinking, and 100-case policy red team"
-      ],
-      "philosophy_sources": [
-        "Project Gutenberg core: Plato Republic 1497; Aristotle Ethics 8438; Hume Enquiry 9662; Locke Essay Vol. 1 10615",
-        "Project Gutenberg breadth: Mill Utilitarianism 11224; Wollstonecraft Vindication 3420; Nietzsche BGE 4363; Legge Confucian Analects 4094; Descartes Meditations 70091",
-        "License gate: pin edition/translator, metadata copyright flag, URL, retrieval date, and SHA-256; keep OpenGreekAndLatin CC BY-SA in a separate optional shard",
-        "Split gate: work/author-level groups, author cap 15%, two held-out authors, 200 human gold passages, 50 double-labeled"
-      ],
-      "high_roi_coverage": [
-        "Xiaohongshu-confirmed AI-specific core: LLM inference 59.8 overall / 81.3 XHS, model evaluation 50.0 / 43.4, training pipelines 43.2 / 46.6, quantization 41.9 / 48.9, GPU/CUDA 40.8 / 40.9, LLM agents 40.8 / 35.0, backend APIs 41.0 / 30.8, profiling 39.5 / 28.5, cloud infrastructure 37.7 / 26.4.",
-        "Saved 56-post Xiaohongshu corpus repeatedly supports the project's serving-heavy emphasis: vLLM/PagedAttention, KV cache, MHA/MQA/GQA, continuous batching, TensorRT/llama.cpp deployment, source reading, training infra, eval systems, and AI Infra crowding/blue-ocean claims.",
-        "High hiring-ROI foundations with weak or zero Xiaohongshu evidence remain mandatory proof, not trend claims: Python 82.6 market, communication 66.7, distributed systems 65.8, C++ 60.2, DSA 59.9, system design 53.0, data pipelines 52.9, production ops 52.6, ML fundamentals 51.3, OS/concurrency 50.1, testing/quality 47.3, DL frameworks 47.1.",
-        "Coverage mapping: Python/PyTorch/data pipelines in elenkhos-train; C++/backend APIs in elenkhos-serve; OS/concurrency/distributed systems in scheduling/admission/reliability; production ops/testing in qualification, rollback, load, fault, parity, property, integration, and regression tests; communication in the final cross-layer report.",
-        "LLM agents are covered narrowly through the typed ElenkhosAgent ask/observe/answer loop. Generic multi-agent orchestration and RAG remain deferred because they would broaden the project and confound the controlled questioning-policy experiment.",
-        "Follow-up Xiaohongshu queries to refresh before applications: 'AI Infra 分布式系统 学习路线', '大模型 数据工程 数据清洗 预训练', 'MLE testing CI/CD system design', 'PyTorch JAX 训练框架 源码', 'LLM serving reliability SLO 观测', and 'AI Infra 校招 面试 DSA C++'."
-      ],
-      "primary_source_readings": [
-        {
-          "category": "Architecture",
-          "title": "Grouped-Query Attention",
-          "url": "https://arxiv.org/abs/2305.13245"
-        },
-        {
-          "category": "Training",
-          "title": "Chinchilla compute-optimal training",
-          "url": "https://arxiv.org/abs/2203.15556"
-        },
-        {
-          "category": "Data",
-          "title": "The FineWeb Datasets",
-          "url": "https://arxiv.org/abs/2406.17557"
-        },
-        {
-          "category": "Post-training",
-          "title": "Qwen3 Technical Report",
-          "url": "https://arxiv.org/abs/2505.09388"
-        },
-        {
-          "category": "Post-training",
-          "title": "QLoRA",
-          "url": "https://arxiv.org/abs/2305.14314"
-        },
-        {
-          "category": "Post-training",
-          "title": "Direct Preference Optimization",
-          "url": "https://arxiv.org/abs/2305.18290"
-        },
-        {
-          "category": "Serving",
-          "title": "vLLM / PagedAttention",
-          "url": "https://arxiv.org/abs/2309.06180"
-        },
-        {
-          "category": "Serving",
-          "title": "Orca continuous batching",
-          "url": "https://www.usenix.org/conference/osdi22/presentation/yu"
+          "use": "curriculum reference: LLM internals, vLLM serving, inference-platform system design"
         }
       ],
       "owned_vs_delegated": {
         "owned": [
-          "data/model lineage and release manifests",
-          "philosophical-reasoning task generation (Socratic, argument-reconstruction, dialectic, fallacy-detection), trajectory verification, reasoning evaluation, and adapters",
-          "answer quality, question quality, SLO, memory, and compatibility gates",
-          "C++ request lifecycle, scheduling, admission, canary, rollback, observability, and fault injection",
-          "benchmark methodology and promotion decision"
+          "the inference engine: iteration-level scheduler, paged KV cache, continuous batching, chunked prefill, admission control",
+          "the cross-device benchmark harness and methodology",
+          "the outperformance optimization (KV quantization/offload or speculative decoding)"
         ],
         "delegated": [
-          "PyTorch tensor kernels and autograd",
-          "llama.cpp model execution, tokenizer, quantization kernels, and low-level KV storage",
-          "vLLM as a comparison baseline"
+          "matmul/attention kernels to PyTorch / FlashInfer",
+          "tokenizer and weights to HuggingFace",
+          "production baselines to vLLM, SGLang, and llama.cpp",
+          "low-level Metal/CUDA kernels (one optional hand-written kernel as a stretch)"
         ]
       },
-      "signal_ids": [
-        "sig-llm-inference",
-        "sig-llm-agents",
-        "sig-model-evaluation",
-        "sig-performance-profiling",
-        "sig-production-ops",
-        "sig-quantization-optimization",
-        "sig-training-pipelines"
-      ],
       "proof_gaps": [
-        "No public LM training system",
-        "No public C++ serving/reliability artifact",
-        "No measured cloud-vs-constrained inference benchmark",
-        "Training+serving combination unproven",
-        "No public release qualification, blocked-release, or rollback artifact",
-        "No public reasoning-model distillation or interactive-question evaluation artifact"
+        "No public from-scratch inference-engine artifact yet.",
+        "No measured head-to-head benchmark vs production systems.",
+        "No demonstrated optimization that beats a production baseline in any regime."
       ],
       "reuse_existing_work": true,
       "estimated_hours": 0,
       "prerequisite_burden": 10,
       "acceptance_criteria": [
-        "CS336 traceability: every required A1-A5 row in docs/elenkhos-project-spec.md maps to a test, report, config, or machine-readable artifact; written/stretch/cut items remain labeled",
-        "A3/A4 depth: nine bounded scaling runs with a held-out third-budget prediction; raw-web quality-classifier disagreement audit and stage throughput projection",
-        "Philosophy data: nine edition-pinned Gutenberg sources, author/work caps and splits, two held-out authors, 200 human gold passages, 50 double-labeled, no unlicensed encyclopedia/contemporary prose",
-        "Systems baseline: fixture-100k and materialized local-pretrain-10m Mac pre-scaling; streamed acquisition but mmap-only training; exact 10.69M/27.53M/71.21M configs with one frozen 16K tokenizer; 300M-token final run or documented 100M fallback; eval + profiler trace",
-        "Elenkhos: pinned Qwen3-1.7B student; staged 2K and 4K accepted datasets with an evidence-gated 8K cap; 4K hard-case preference pairs default and 8K maximum; Elenkhos-1.7B-SFT and Elenkhos-1.7B-DPO trained with version-pinned TRL/PEFT QLoRA",
-        "Reasoning evaluation: untouched non-thinking, untouched native-thinking, prompt-only, answer-only SFT, trajectory SFT, and DPO; frozen parser/sampling contract, per-source macro scores, paired bootstrap 95% confidence intervals, and held-out results on FOLIO, logical-fallacy, Socratic-debugging, and ElenkhosBench",
-        "ElenkhosServe C++ service: CMake C++20 build, OpenAI-compatible streaming, scheduler, admission control, shadow/canary states, automatic rollback, and reliability/fault tests",
-        "Bounded AI-software surface: typed ElenkhosAgent ask/observe/answer loop over the frozen environment, with action validation, max-turn/question budgets, deterministic replay, and overload/timeout propagation",
-        "Versioned release-manifest.json joins data recipe, tokenizer, architecture, checkpoint, quantization, runtime, hardware profile, eval baseline, and SLO budget",
-        "Qualification report: quality delta, TTFT/TPOT/p50/p95/p99/goodput, memory, and pass/fail reasons across stock llama.cpp, custom FIFO, custom admission, vLLM, Q8/Q4, cloud CUDA, and target MacBook Pro M4 16GB llama.cpp/Metal profiles",
-        "Shared eval harness blocks a candidate for reasoning or question-policy regression; an injected overload/model-load/memory failure triggers canary rollback",
-        "Cross-layer report answers one pre-registered question across data curation, MHA→GQA, quantization, and admission control; every result is reproducible from machine-readable configs and includes at least one neutral or failed result",
-        "Two independently reviewable repos with READMEs that separate owned code from library behavior; one blocked-release incident report; one rollback incident report; 2-min and 10-min explanations + role-specific resume bullets"
+        "Every batched / paged / optimized path matches the single-request oracle (parity or a measured, bounded quality delta).",
+        "A reproducible cross-device benchmark reports the engine vs vLLM, SGLang, and llama.cpp from checked-in configs and run cards.",
+        "The latency-throughput Pareto frontier is characterized per device with a stated best-served regime.",
+        "The chosen optimization yields a reproducible win over the production baseline in the defended regime.",
+        "An architecture report and portfolio README separate owned engine code from delegated kernels and baselines."
       ]
     }
   ],
   "resource_decisions": [
-    {
-      "resource_id": "studyplan-pro-cpp",
-      "disposition": "primary",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-        "Build Process — https://www.studyplan.dev/pro-cpp/build-process",
-        "Smart Pointers — https://www.studyplan.dev/pro-cpp/smart-pointers",
-        "Move Semantics — https://www.studyplan.dev/pro-cpp/move-semantics"
-      ],
-      "trigger": null,
-      "reason": "Use only for C++ build mechanics, RAII, ownership, and move semantics in the engine adapter; it is not the scheduler-concurrency textbook.",
-      "resource_name": "Professional C++ - StudyPlan.dev",
-      "resource_score": 79,
-      "url": "https://www.studyplan.dev/pro-cpp"
-    },
     {
       "resource_id": "ai-engineering-from-scratch",
       "disposition": "primary",
@@ -2366,342 +1743,179 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w1-2-engine",
+        "unit-w9-10-benchmark"
       ],
       "assigned_sections": [
-        "Phase 7 Transformers Deep Dive — attention variants, RoPE/ALiBi, KV cache, Flash Attention, speculative decoding — https://aiengineeringfromscratch.com/prereqs.html",
-        "Phase 9 Reinforcement Learning — policy gradients, PPO, RLHF reward modeling — https://aiengineeringfromscratch.com/prereqs.html",
-        "Phase 10 LLMs from Scratch — tokenizers, pretraining, FSDP, SFT, DPO, quantization (AWQ/GGUF), EAGLE-3 speculative decoding — https://aiengineeringfromscratch.com/prereqs.html",
-        "11/01 Evaluation Foundations — https://aiengineeringfromscratch.com/lesson.html?path=phases/11-llm-engineering/01-evaluation-foundations",
-        "11/02 Golden Datasets — https://aiengineeringfromscratch.com/lesson.html?path=phases/11-llm-engineering/02-golden-datasets",
-        "11/05 Regression Testing — https://aiengineeringfromscratch.com/lesson.html?path=phases/11-llm-engineering/05-regression-testing",
-        "11/10 Evaluation — https://aiengineeringfromscratch.com/lesson.html?path=phases/11-llm-engineering/10-evaluation",
-        "19/07 End-to-End Fine-Tuning Pipeline — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/07-end-to-end-fine-tuning-pipeline",
-        "19/14 Speculative-Decoding Server — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/14-speculative-decoding-server",
-        "19/27 Eval Harness Fixture Tasks — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/27-eval-harness-fixture-tasks",
-        "19/42 Large Corpus Downloader — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/42-large-corpus-downloader",
-        "19/43 HDF5 Tokenized Corpus — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/43-hdf5-tokenized-corpus",
-        "19/44 Cosine LR Warmup — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/44-cosine-lr-warmup",
-        "19/45 Gradient Clipping & AMP — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/45-gradient-clipping-amp",
-        "19/46 Gradient Accumulation — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/46-gradient-accumulation",
-        "19/47 Checkpoint Save/Resume — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/47-checkpoint-save-resume",
-        "19/48 Distributed FSDP/DDP — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/48-distributed-fsdp-ddp",
-        "19/49 LM Eval Harness — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/49-lm-eval-harness",
-        "19/71 Classical Metrics — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/71-classical-metrics",
-        "19/75 End-to-End Eval Runner — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/75-end-to-end-eval-runner",
-        "17/04 vLLM Serving Internals — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/04-vllm-serving-internals",
-        "17/05 Continuous Batching — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/05-continuous-batching",
-        "17/08 Inference Metrics and Goodput — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/08-inference-metrics-goodput",
-        "17/09 Production Quantization — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/09-production-quantization",
-        "17/20 Shadow, Canary, Progressive Rollout — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/20-shadow-canary-progressive",
-        "17/22 Load Testing LLM APIs — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/22-load-testing-llm-apis"
+        "vLLM Serving Internals — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/04-vllm-serving-internals",
+        "Continuous Batching — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/05-continuous-batching",
+        "Model Serving SLOs — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/10-model-serving-slos",
+        "Speculative-Decoding Server — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/14-speculative-decoding-server"
       ],
       "trigger": null,
-      "reason": "Runnable from-scratch glue across the whole arc: Phase 7/9/10 model-and-training internals, the 19/42-49 Train End-to-End track (corpus, cosine LR, grad clip/AMP, grad accumulation, checkpoint resume, FSDP/DDP, lm-eval) and 19/07 fine-tuning pipeline for Elenkhos, plus evaluation, serving policy, 19/14 speculative-decoding server, release qualification, canary, rollback, and load testing for ElenkhosServe.",
+      "reason": "Primary serving-internals reference: vLLM internals, continuous batching, SLOs, and a speculative-decoding server.",
       "resource_name": "AI Engineering From Scratch",
       "resource_score": 93,
       "url": "https://aiengineeringfromscratch.com/prereqs.html"
     },
     {
-      "resource_id": "karpathy-from-scratch",
+      "resource_id": "mlsys-book",
       "disposition": "supplement",
       "assigned_unit_ids": [
         "unit-w1-2-engine",
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ],
       "assigned_sections": [
-        "minbpe — minimal byte-level BPE core, tests, and exercise: https://github.com/karpathy/minbpe",
-        "minGPT — compact model.py/trainer.py separation and tiny executable examples: https://github.com/karpathy/minGPT",
-        "nanoGPT — minimal GPT-2 pretraining loop (AMP, gradient accumulation, DDP, cosine LR): https://github.com/karpathy/nanoGPT",
-        "llm.c — simple FP32 CPU reference beside optimized C/CUDA training; parity and profiling pattern: https://github.com/karpathy/llm.c",
-        "llama2.c — dependency-light single-file inference lifecycle and int8 comparison on Apple Silicon: https://github.com/karpathy/llama2.c",
-        "nanochat — cohesive tokenize/pretrain/SFT/eval/inference pipeline, single-node scaling/miniseries scripts, cost-aware speedrun, and CPU/MPS small-run path: https://github.com/karpathy/nanochat",
-        "micrograd and Neural Networks: Zero to Hero — tiny hand-checkable graphs, visible intermediates, and derive-then-test pedagogy only: https://github.com/karpathy/micrograd and https://github.com/karpathy/nn-zero-to-hero"
+        "Model Serving — https://mlsysbook.ai/",
+        "Benchmarking methodology — https://mlsysbook.ai/"
       ],
       "trigger": null,
-      "reason": "Selective design references: transparent BPE/model/trainer decomposition, reference-to-optimized parity, dependency-light inference lifecycle, and a cohesive single-node end-to-end harness. They shape the implementation but do not create extra parallel projects.",
-      "resource_name": "Karpathy from-scratch LLM repos (nanoGPT, llm.c, llama2.c, nanochat)",
-      "resource_score": 88,
-      "url": "https://github.com/karpathy/nanochat"
-    },
-    {
-      "resource_id": "mlsys-book",
-      "disposition": "primary",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-        "Data Engineering — https://mlsysbook.ai/vol1/contents/vol1/data_engineering/data_engineering.html",
-        "Network Architectures — https://mlsysbook.ai/vol1/contents/vol1/nn_architectures/nn_architectures.html",
-        "Model Training — https://mlsysbook.ai/vol1/contents/vol1/training/training.html",
-        "Benchmarking — https://mlsysbook.ai/vol1/contents/vol1/benchmarking/benchmarking.html",
-        "Model Serving — https://mlsysbook.ai/vol1/contents/vol1/model_serving/model_serving.html",
-        "Model Optimizations — https://mlsysbook.ai/book/contents/core/optimizations/optimizations.html",
-        "Fault Tolerance — https://mlsysbook.ai/vol2/contents/vol2/fault_tolerance/fault_tolerance.html",
-        "Performance Engineering — https://mlsysbook.ai/vol2/contents/vol2/performance_engineering/performance_engineering.html"
-      ],
-      "trigger": null,
-      "reason": "Systems framing read per-stage for data, serving, quantization, and the benchmark.",
+      "reason": "Serving-systems vocabulary and benchmarking methodology for the whole engine.",
       "resource_name": "MLSys Book",
       "resource_score": 90,
       "url": "https://mlsysbook.ai/"
     },
     {
-      "resource_id": "gpu-mode",
+      "resource_id": "ostep",
       "disposition": "supplement",
       "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w5-6-batching"
       ],
       "assigned_sections": [
-        "Lecture 1 profiling — https://github.com/gpu-mode/lectures/tree/main/lecture_001",
-        "Lecture 8 CUDA performance checklist — https://github.com/gpu-mode/lectures/tree/main/lecture_008"
+        "Ch. 26-32 Concurrency, threads, locks, condition variables — https://pages.cs.wisc.edu/~remzi/OSTEP/"
       ],
       "trigger": null,
-      "reason": "Profiling methodology for the training optimization and the Nsight/perf analysis.",
-      "resource_name": "GPU Mode",
-      "resource_score": 91,
-      "url": "https://github.com/gpu-mode"
-    },
-    {
-      "resource_id": "mit-6s081",
-      "disposition": "later",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-
-      ],
-      "trigger": "An OS/runtime interview or post-summer xv6 work",
-      "reason": "The full lab is too expensive for scheduler preparation; OSTEP supplies the needed concurrency concepts.",
-      "resource_name": "MIT 6.S081 Operating Systems",
-      "resource_score": 90,
-      "url": "https://pdos.csail.mit.edu/6.S081/2021/schedule.html"
-    },
-    {
-      "resource_id": "ostep",
-      "disposition": "primary",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-        "Chapters 26-32 — https://pages.cs.wisc.edu/~remzi/OSTEP/"
-      ],
-      "trigger": null,
-      "reason": "Primary concurrency text for the bounded queue, condition-variable coordination, cancellation cleanup, and race analysis.",
+      "reason": "Concurrency and scheduling primitives for the iteration-level scheduler and admission control.",
       "resource_name": "OSTEP",
       "resource_score": 79,
       "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/"
     },
     {
-      "resource_id": "neetcode-roadmap",
-      "disposition": "primary",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-        "NeetCode 150 core"
-      ],
-      "trigger": null,
-      "reason": "Fall coding-screen gate (still required for AI-Infra loops).",
-      "resource_name": "NeetCode Roadmap",
-      "resource_score": 83,
-      "url": "https://neetcode.io/roadmap"
-    },
-    {
-      "resource_id": "hello-interview",
-      "disposition": "primary",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-        "framework + 6 timed designs"
-      ],
-      "trigger": null,
-      "reason": "Fall system-design gate; the serving project is the ML-infra answer.",
-      "resource_name": "Hello Interview: System Design in a Hurry",
-      "resource_score": 79,
-      "url": "https://www.hellointerview.com/learn/system-design/in-a-hurry/introduction"
-    },
-    {
-      "resource_id": "ddia",
-      "disposition": "reference_only",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-
-      ],
-      "trigger": null,
-      "reason": "Distributed-data concepts as reference; the C++ service supplies the reliability build.",
-      "resource_name": "Designing Data-Intensive Applications",
-      "resource_score": 67,
-      "url": "https://dataintensive.net/"
-    },
-    {
-      "resource_id": "leetgpu",
-      "disposition": "later",
-      "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
-      ],
-      "assigned_sections": [
-
-      ],
-      "trigger": "A GPU-kernel loop after the serving benchmark",
-      "reason": "Kernels are explicitly cut from the summer scope (delegate to llama.cpp).",
-      "resource_name": "LeetGPU",
-      "resource_score": 85,
-      "url": "https://leetgpu.com/challenges"
-    },
-    {
-      "resource_id": "interviewing-system-design",
+      "resource_id": "cmu-15445",
       "disposition": "supplement",
       "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w3-4-kv"
       ],
       "assigned_sections": [
-        "timed mock"
+        "Buffer Pool / page management — https://15445.courses.cs.cmu.edu/"
       ],
       "trigger": null,
-      "reason": "System-design calibration mock (fall).",
-      "resource_name": "interviewing.io System Design Guide",
-      "resource_score": 67,
-      "url": "https://interviewing.io/guides/system-design-interview#introduction-to-system-design"
+      "reason": "Block allocation and page-table design, the analog for the paged KV cache.",
+      "resource_name": "CMU 15-445 Database Systems",
+      "resource_score": 90,
+      "url": "https://15445.courses.cs.cmu.edu/spring2026/"
     },
     {
       "resource_id": "cse-234",
-      "disposition": "later",
+      "disposition": "supplement",
       "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
-        "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w9-10-benchmark"
       ],
       "assigned_sections": [
-
+        "Serving systems and the throughput-latency tradeoff — https://hao-ai-lab.github.io/cse234-w25/"
       ],
-      "trigger": "A data/ML-platform loop",
-      "reason": "Distributed data-systems depth beyond the summer scope.",
+      "trigger": null,
+      "reason": "Modern serving systems and the throughput-latency tradeoff.",
       "resource_name": "CSE 234: Data Systems for Machine Learning",
       "resource_score": 90,
       "url": "https://haoailab.com/cse234-w25/index.html"
     },
     {
-      "resource_id": "cmu-15445",
-      "disposition": "later",
+      "resource_id": "ddia",
+      "disposition": "supplement",
       "assigned_unit_ids": [
-        "unit-w1-2-engine",
-        "unit-w3-4-kv",
         "unit-w5-6-batching",
-        "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release"
+        "unit-w9-10-benchmark"
       ],
       "assigned_sections": [
-
+        "Load, latency percentiles, backpressure, graceful degradation — https://dataintensive.net/"
       ],
-      "trigger": "An AWS Data Services / storage loop",
-      "reason": "Storage/query depth; off the two-project path.",
-      "resource_name": "CMU 15-445 Database Systems",
-      "resource_score": 90,
-      "url": "https://15445.courses.cs.cmu.edu/spring2026/"
+      "trigger": null,
+      "reason": "Reliability under load: percentiles, backpressure, and graceful degradation for admission control.",
+      "resource_name": "Designing Data-Intensive Applications",
+      "resource_score": 67,
+      "url": "https://dataintensive.net/"
+    },
+    {
+      "resource_id": "gpu-mode",
+      "disposition": "trigger",
+      "assigned_unit_ids": [
+        "unit-w11-12-optimize"
+      ],
+      "assigned_sections": [
+        "GPU Mode lectures — https://github.com/gpu-mode/lectures"
+      ],
+      "trigger": "Optional Week 11-12 hand-written CUDA/Metal kernel on a hot path.",
+      "reason": "Kernel-level optimization for the optional outperformance-stretch kernel.",
+      "resource_name": "GPU Mode",
+      "resource_score": 91,
+      "url": "https://github.com/gpu-mode"
+    },
+    {
+      "resource_id": "karpathy-from-scratch",
+      "disposition": "supplement",
+      "assigned_unit_ids": [
+        "unit-w1-2-engine"
+      ],
+      "assigned_sections": [
+        "llama2.c — minimal inference loop — https://github.com/karpathy/llama2.c"
+      ],
+      "trigger": null,
+      "reason": "Dependency-light, inspectable inference loop as the from-scratch reference.",
+      "resource_name": "Karpathy from-scratch LLM repos (nanoGPT, llm.c, llama2.c, nanochat)",
+      "resource_score": 88,
+      "url": "https://github.com/karpathy/nanochat"
     }
   ],
   "cuts": [
     {
-      "item": "Post-training: pretraining, distillation, SFT, DPO, RLHF",
-      "status": "cut_for_now",
-      "reason": "Depth-over-breadth decision: this is an inference-systems project. Training a model would displace the scheduler depth that is the whole point. Post-training is a separate project, not a second half here.",
-      "revisit_when": "A post-training-focused role or a follow-on project after ElenkhosServe ships.",
+      "item": "Post-training (pretraining, distillation, SFT, DPO, RLHF)",
+      "status": "cut",
+      "reason": "This is an inference-systems project; training a model would displace the engine depth. Separate project.",
+      "revisit_when": "A post-training-focused role or a follow-on project.",
       "topics": [
-        "Qwen3-1.7B SFT/DPO and 70M pretraining move out of scope"
+        "Out of scope: model training"
+      ]
+    },
+    {
+      "item": "Interview-gate track (DSA, system design as project units)",
+      "status": "cut",
+      "reason": "Deleted from the project scope to keep the site focused on one deep engine; interview prep is maintained separately, not as project modules.",
+      "revisit_when": "Closer to interview season, outside this project.",
+      "topics": [
+        "Removed from the curriculum"
       ]
     },
     {
       "item": "Disaggregated prefill/decode serving (DistServe, Mooncake)",
       "status": "later",
-      "reason": "Needs multi-GPU and KV transfer over the network — out of reach for a solo 16GB-Mac + single-GPU-benchmark budget. The chunked-prefill module covers the prefill/decode interference story on one device.",
+      "reason": "Needs multi-GPU and KV transfer over the network — out of reach for a solo 16GB-Mac + single-GPU-benchmark budget.",
       "revisit_when": "Multi-GPU access and a role that requires disaggregation.",
       "topics": [
-        "DistServe (OSDI'24); Mooncake KV-centric disaggregation"
+        "DistServe (OSDI'24); Mooncake"
       ]
     },
     {
-      "item": "Speculative decoding (EAGLE) as the core track",
-      "status": "later",
-      "reason": "Strong alternative track, but training an EAGLE draft head drifts into post-training; kept as an optional extension once the scheduler depth ships.",
-      "revisit_when": "Reserve hours remain after the benchmark; add engine-native speculative decoding as a module.",
+      "item": "Beating vLLM/SGLang on datacenter GPUs at scale",
+      "status": "cut",
+      "reason": "Naive and falsifiable; production engines win on their home turf. The defended claim is outperformance in a specific regime (Apple Silicon, memory-constrained, low-to-moderate concurrency).",
+      "revisit_when": "Never as framed; the regime-specific claim is the honest one.",
       "topics": [
-        "EAGLE-2/3 draft heads (optional extension)"
+        "Outperformance is regime-scoped, not absolute"
       ]
     },
     {
-      "item": "Custom CUDA/Metal kernels as a required deliverable",
+      "item": "Required custom CUDA/Metal kernels",
       "status": "cut_for_now",
-      "reason": "Abstraction boundary: own the scheduler/KV/admission algorithms, delegate kernels to PyTorch/FlashInfer. One hand-written kernel is an optional Week 11-12 depth spike, not a requirement.",
-      "revisit_when": "The benchmark ships early and reserve hours remain.",
+      "reason": "Own the scheduler/KV/admission algorithms; delegate kernels to PyTorch/FlashInfer. One hand-written kernel is an optional Week 11-12 stretch.",
+      "revisit_when": "The optimization ships early and reserve hours remain.",
       "topics": [
-        "GPU Mode + LeetGPU on trigger (one hot-path kernel)"
-      ]
-    },
-    {
-      "item": "Generalist-MLE niche & generic portfolio",
-      "status": "cut_for_now",
-      "reason": "Inference-systems specialization beats generalist breadth in the 2026 market; one deep, named-paper project is the higher-signal bet.",
-      "revisit_when": "Only if the niche fails its Aug-Oct re-check.",
-      "topics": [
-        "Generic prep is covered by the fall DSA + system-design gates"
+        "GPU Mode + LeetGPU on trigger"
       ]
     }
   ],
@@ -2786,14 +2000,12 @@
       "question": "How do phases, sections, and lessons accumulate into the one primary proof project?",
       "source_ids": [
         "phase-inference-scheduler",
-        "phase-interview-gates",
         "section-w1-2",
         "section-w3-4",
         "section-w5-6",
         "section-w7-8",
         "section-w9-10",
-        "section-w11-12",
-        "section-gates"
+        "section-w11-12"
       ],
       "node_types": [
         "phase",
@@ -2807,13 +2019,13 @@
       "encodings": [
         "nesting: phase > section > lesson",
         "badge: status",
-        "arrow: lesson output feeds the capstone"
+        "arrow: lesson output feeds the project"
       ],
       "interactions": [
         "expand a phase to its sections and lessons",
         "select a lesson to open its full contract"
       ],
-      "accessible_equivalent": "Nested list of phases → sections → lessons with status and hours, plus which feed the capstone."
+      "accessible_equivalent": "Nested list of phases → sections → lessons with status and hours, plus which feed the project."
     },
     {
       "diagram_id": "diagram-workflow-ownership",
@@ -2856,10 +2068,8 @@
         "unit-w3-4-kv",
         "unit-w5-6-batching",
         "unit-w7-8-prefill",
-        "unit-w9-10-slo",
-        "unit-w11-12-release",
-        "unit-dsa",
-        "unit-sysdesign"
+        "unit-w9-10-benchmark",
+        "unit-w11-12-optimize"
       ],
       "node_types": [
         "unit"
@@ -2881,66 +2091,66 @@
   "build_sequence": [
     {
       "step": 1,
-      "title": "Minimal inference engine + reference oracle",
+      "title": "Minimal engine + multi-device benchmark harness",
       "when": "Weeks 1-2",
-      "track": "elenkhos-serve",
-      "produces": "A minimal inference engine with a streaming API, a frozen deterministic oracle, and a reproducible benchmark harness.",
+      "track": "inference-engine",
+      "produces": "A minimal engine with a streaming API, a frozen oracle, and a cross-device (Apple Silicon + CUDA) benchmark harness.",
       "unit_id": "unit-w1-2-engine"
     },
     {
       "step": 2,
       "title": "Paged KV cache (PagedAttention)",
       "when": "Weeks 3-4",
-      "track": "elenkhos-serve",
-      "produces": "A PagedAttention-style KV cache with a contiguous-vs-paged memory study and oracle parity.",
+      "track": "inference-engine",
+      "produces": "A PagedAttention-style KV cache with a contiguous-vs-paged memory study on both devices and oracle parity.",
       "unit_id": "unit-w3-4-kv"
     },
     {
       "step": 3,
-      "title": "Continuous batching (Orca)",
+      "title": "Continuous batching (Orca) + admission control",
       "when": "Weeks 5-6",
-      "track": "elenkhos-serve",
-      "produces": "An Orca-style continuous-batching scheduler with oracle parity and a throughput study vs static batching.",
+      "track": "inference-engine",
+      "produces": "An Orca-style continuous-batching scheduler with admission control, oracle parity, and a throughput/goodput study on both devices.",
       "unit_id": "unit-w5-6-batching"
     },
     {
       "step": 4,
-      "title": "Chunked prefill (Sarathi-Serve)",
+      "title": "Chunked prefill (Sarathi-Serve) + latency-throughput Pareto",
       "when": "Weeks 7-8",
-      "track": "elenkhos-serve",
-      "produces": "A Sarathi-Serve chunked-prefill scheduler with a TTFT/TBT interference study and a defended token-budget default.",
+      "track": "inference-engine",
+      "produces": "A Sarathi-Serve chunked-prefill scheduler and a per-device latency-throughput Pareto characterization with a stated best regime.",
       "unit_id": "unit-w7-8-prefill"
     },
     {
       "step": 5,
-      "title": "Latency-throughput Pareto + SLO-aware admission",
+      "title": "Cross-device benchmark vs vLLM, SGLang, and llama.cpp",
       "when": "Weeks 9-10",
-      "track": "elenkhos-serve",
-      "produces": "A latency-throughput Pareto characterization plus an SLO-aware admission scheduler that beats FIFO on goodput under overload.",
-      "unit_id": "unit-w9-10-slo"
+      "track": "inference-engine",
+      "produces": "A reproducible cross-device benchmark matrix vs vLLM, SGLang, and llama.cpp, with a defended target regime.",
+      "unit_id": "unit-w9-10-benchmark"
     },
     {
       "step": 6,
-      "title": "Benchmark vs vLLM, hardening & portfolio release",
+      "title": "Outperformance optimization + portfolio release",
       "when": "Weeks 11-12",
-      "track": "elenkhos-serve",
-      "produces": "A reproducible ElenkhosServe-vs-vLLM-vs-llama.cpp benchmark, a hardened service, and an architecture report + portfolio README.",
-      "unit_id": "unit-w11-12-release"
+      "track": "inference-engine",
+      "produces": "One paper-backed optimization that reproducibly outperforms the production baseline in the defended regime, plus the benchmark report and portfolio README.",
+      "unit_id": "unit-w11-12-optimize"
     }
   ],
   "compute_policy": {
-    "canonical_environment": "MacBook Pro M4 16GB is the primary development and correctness environment: all engine and scheduler logic runs on MPS with a small model (Qwen2.5-0.5B / Llama-3.2-1B). A short-lived rented CUDA GPU (e.g., a 24GB Runpod Pod) is used only for the final head-to-head benchmark against vLLM. llama.cpp/Metal on the M4 is the on-device edge baseline.",
+    "canonical_environment": "MacBook Pro M4 16GB is the primary development and Apple-Silicon benchmark device (MPS/Metal, small model). A short-lived rented CUDA GPU (e.g., a 24GB Runpod Pod) runs the CUDA leg: your engine plus the vLLM and SGLang baselines. llama.cpp is benchmarked on both the M4 and CUDA.",
     "cost_ceiling_usd": 150,
-    "expected_total_spend": "Development is Mac-local and free. The only paid compute is the benchmark week on a rented 24GB CUDA GPU (~USD0.27-0.69/hour); a handful of benchmark hours imply roughly USD10-30. Plan USD20-40 expected, keep USD150 as a hard ceiling.",
-    "per_run_gate": "Cloud is used only after the Mac-local module passes its parity gate. Each benchmark run is scripted from checked-in configs and run cards so it is reproducible and short."
+    "expected_total_spend": "Development is Mac-local and free. Paid compute is the benchmark legs on a rented 24GB CUDA GPU (~USD0.27-0.69/hour); a handful of benchmark hours imply roughly USD15-40. Plan USD20-50 expected, USD150 hard ceiling.",
+    "per_run_gate": "Cloud runs only after the Mac-local module passes its parity gate; each benchmark run is scripted from checked-in configs and run cards so it is reproducible and short."
   },
   "execution_timeline": {
     "title": "12-week execution timeline: June 22 to September 13, 2026",
-    "capacity_rule": "About 17 committed hours/week plus ~3 reserve; ~174h committed with slack for debugging, reruns, interviews, and applications.",
+    "capacity_rule": "About 17 committed hours/week plus ~3 reserve; ~174h committed with slack for debugging, reruns, and applications.",
     "parallelization_rules": [
-      "Mac-first: all engine and scheduler logic is developed and tested on the M4 with a small model (Qwen2.5-0.5B / Llama-3.2-1B) on MPS for functional correctness.",
-      "Cloud is benchmark-only: a short-lived rented CUDA GPU is used solely for the head-to-head throughput/latency benchmark against vLLM, never for routine development.",
-      "Each module gates the next: do not start batching before the paged KV cache passes parity; do not start chunked prefill before continuous batching matches the oracle."
+      "Mac-first: engine and scheduler logic is developed and tested on the M4 (MPS) with a small model; the same code runs on CUDA.",
+      "Cloud is benchmark-only: a short-lived rented CUDA GPU runs vLLM/SGLang and the CUDA leg of the comparison, never routine dev.",
+      "Each module gates the next: paged KV before batching; batching matches the oracle before chunked prefill; an honest baseline before the optimization."
     ],
     "weeks": [
       {
@@ -2948,96 +2158,96 @@
         "dates": "2026-06-22 to 2026-06-28",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Minimal engine: single-request decode loop + deterministic oracle + benchmark harness",
-        "gate": "Week 1 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Minimal engine + deterministic oracle (Apple Silicon + CUDA)",
+        "gate": "Week 1 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 2,
         "dates": "2026-06-29 to 2026-07-05",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Engine: OpenAI-compatible streaming API, sampling, stop conditions, seeded request traces",
-        "gate": "Week 2 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Cross-device benchmark harness + seeded traces",
+        "gate": "Week 2 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 3,
         "dates": "2026-07-06 to 2026-07-12",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Paged KV cache: block allocator + per-request block tables",
-        "gate": "Week 3 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Paged KV block allocator + block tables",
+        "gate": "Week 3 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 4,
         "dates": "2026-07-13 to 2026-07-19",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Paged KV cache: paged attention + contiguous-vs-paged memory study",
-        "gate": "Week 4 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Paged attention + contiguous-vs-paged memory study",
+        "gate": "Week 4 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 5,
         "dates": "2026-07-20 to 2026-07-26",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Continuous batching (Orca): iteration-level scheduler, ragged batches",
-        "gate": "Week 5 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Continuous batching (Orca): iteration-level scheduler",
+        "gate": "Week 5 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 6,
         "dates": "2026-07-27 to 2026-08-02",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Continuous batching: throughput vs static batching, parity with the oracle",
-        "gate": "Week 6 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Admission control, overload 429, throughput vs static",
+        "gate": "Week 6 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 7,
         "dates": "2026-08-03 to 2026-08-09",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Chunked prefill (Sarathi-Serve): split long prefills, piggyback decode",
-        "gate": "Week 7 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Chunked prefill (Sarathi-Serve): token-budgeted chunks",
+        "gate": "Week 7 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 8,
         "dates": "2026-08-10 to 2026-08-16",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Chunked prefill: prefill-decode interference, TTFT vs TBT study",
-        "gate": "Week 8 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Latency-throughput Pareto sweep per device",
+        "gate": "Week 8 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 9,
         "dates": "2026-08-17 to 2026-08-23",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Pareto: sweep batch/chunk knobs, map the latency-throughput frontier",
-        "gate": "Week 9 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Stand up vLLM + SGLang (CUDA) and llama.cpp baselines",
+        "gate": "Week 9 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 10,
         "dates": "2026-08-24 to 2026-08-30",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "SLO-aware admission: token/KV-aware admission, overload 429, goodput under load",
-        "gate": "Week 10 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Cross-device comparison matrix + target-regime call",
+        "gate": "Week 10 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 11,
         "dates": "2026-08-31 to 2026-09-06",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Benchmark vs vLLM (CUDA) and llama.cpp (M4 edge); hardening, cancellation, metrics",
-        "gate": "Week 11 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Implement the outperformance optimization (KV quant / offload / spec)",
+        "gate": "Week 11 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       },
       {
         "week": 12,
         "dates": "2026-09-07 to 2026-09-13",
         "committed_hours": 17,
         "reserve_hours": 3,
-        "primary_focus": "Cross-layer report, architecture README, portfolio release; optional kernel stretch",
-        "gate": "Week 12 artifact is reproducible and, where applicable, matches the single-request reference within tolerance."
+        "primary_focus": "Win in the target regime + report + portfolio release",
+        "gate": "Week 12 artifact is reproducible and, where applicable, matches the oracle within tolerance."
       }
     ]
   }
