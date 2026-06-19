@@ -638,8 +638,8 @@
   /* ---------- resources ---------- */
   function renderResources(main) {
     var sec=el("section",{"aria-labelledby":"res-h"});
-    sec.appendChild(el("h2",{id:"res-h",text:"Resource disposition audit ("+M.resource_decisions.length+" of "+M.resource_decisions.length+")"}));
-    sec.appendChild(el("p",{className:"lede",text:"Every registry resource gets exactly one disposition. Primary/supplement carry exact sections + units; reference/later/cut consume no active time. Registry scores unchanged."}));
+    sec.appendChild(el("h2",{id:"res-h",text:"Curated resources ("+M.resource_decisions.length+")"}));
+    sec.appendChild(el("p",{className:"lede",text:"The resources selected for this project, each with a disposition (primary / supplement / trigger), the exact sections used, and the modules they map to."}));
     var groups=[["primary","Primary — the build & systems spine"],["supplement","Supplement — named gaps"],["reference_only","Reference only"],["later","Later (trigger-based)"],["cut_for_now","Cut for now"]];
     groups.forEach(function(g){
       var list=M.resource_decisions.filter(function(d){return d.disposition===g[0];});

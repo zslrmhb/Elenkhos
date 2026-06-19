@@ -4,7 +4,7 @@
     {
       "path": "data/roadmap/roadmap.yaml",
       "generated_at": "2026-06-17T00:30:00Z",
-      "checksum": "0e9aa26bd7fcb0704b0289b6a35e24b533637f73b88e5037b9722c339c0df293"
+      "checksum": "593ecf9ac28c165da2f8e85d2a6f2e91130fe14c57ef1bcf71c30ba6030d6c0a"
     },
     {
       "path": "data/keyword-analysis/priority-matrix.json",
@@ -561,7 +561,7 @@
           "resource_id": "mlsys-book",
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
-          "section": "Model Serving — https://mlsysbook.ai/",
+          "section": "Model Serving — https://mlsysbook.ai/vol1/contents/vol1/model_serving/model_serving.html",
           "reason": "serving metrics"
         },
         {
@@ -583,7 +583,7 @@
         "resource_id": "ai-engineering-from-scratch",
         "name": "AI Engineering From Scratch",
         "url": "https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/04-vllm-serving-internals",
-        "section": "AIEFS 17/04 vLLM Serving Internals; 17/10 Model Serving SLOs"
+        "section": "AIEFS 17/04 vLLM Serving Internals; 17/08 Inference Metrics & Goodput"
       }
     },
     {
@@ -680,7 +680,7 @@
           "resource_id": "mlsys-book",
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
-          "section": "Model Serving — https://mlsysbook.ai/",
+          "section": "Model Serving — https://mlsysbook.ai/vol1/contents/vol1/model_serving/model_serving.html",
           "reason": "KV memory framing"
         }
       ],
@@ -792,7 +792,7 @@
           "resource_id": "ai-engineering-from-scratch",
           "name": "AI Engineering From Scratch",
           "url": "https://aiengineeringfromscratch.com/prereqs.html",
-          "section": "Continuous Batching — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/05-continuous-batching",
+          "section": "vLLM Serving Internals (continuous batching & scheduler) — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/04-vllm-serving-internals",
           "reason": "inference scheduling"
         }
       ],
@@ -920,7 +920,7 @@
           "resource_id": "mlsys-book",
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
-          "section": "Benchmarking — https://mlsysbook.ai/",
+          "section": "Benchmarking — https://mlsysbook.ai/vol1/contents/vol1/benchmarking/benchmarking.html",
           "reason": "methodology"
         }
       ],
@@ -944,7 +944,7 @@
       "primary_resource": {
         "resource_id": "mlsys-book",
         "name": "MLSys Book",
-        "url": "https://mlsysbook.ai/",
+        "url": "https://mlsysbook.ai/vol1/contents/vol1/benchmarking/benchmarking.html",
         "section": "MLSys Book: serving systems + benchmarking methodology"
       }
     },
@@ -1066,7 +1066,7 @@
           "resource_id": "mlsys-book",
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
-          "section": "Optimization & serving — https://mlsysbook.ai/",
+          "section": "Model Serving — https://mlsysbook.ai/vol1/contents/vol1/model_serving/model_serving.html",
           "reason": "KV optimization and benchmarking"
         }
       ],
@@ -1171,14 +1171,14 @@
           "resource_id": "mlsys-book",
           "name": "MLSys Book",
           "url": "https://mlsysbook.ai/",
-          "section": "Evaluation & writeup — https://mlsysbook.ai/",
+          "section": "Benchmarking — https://mlsysbook.ai/vol1/contents/vol1/benchmarking/benchmarking.html",
           "reason": "benchmarking writeup"
         },
         {
           "resource_id": "ai-engineering-from-scratch",
           "name": "AI Engineering From Scratch",
           "url": "https://aiengineeringfromscratch.com/prereqs.html",
-          "section": "End-to-End Eval Runner — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/75-end-to-end-eval-runner",
+          "section": "Eval Harness Fixture Tasks — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/27-eval-harness-fixture-tasks",
           "reason": "reproducible evaluation harness"
         }
       ],
@@ -1192,7 +1192,7 @@
       "primary_resource": {
         "resource_id": "mlsys-book",
         "name": "MLSys Book",
-        "url": "https://mlsysbook.ai/",
+        "url": "https://mlsysbook.ai/vol1/contents/vol1/benchmarking/benchmarking.html",
         "section": "MLSys Book: how to write up serving-systems evaluation"
       }
     }
@@ -1794,9 +1794,9 @@
       ],
       "assigned_sections": [
         "vLLM Serving Internals — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/04-vllm-serving-internals",
-        "Continuous Batching — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/05-continuous-batching",
-        "Model Serving SLOs — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/10-model-serving-slos",
-        "Speculative-Decoding Server — https://aiengineeringfromscratch.com/lesson.html?path=phases/19-capstone-projects/14-speculative-decoding-server"
+        "EAGLE-3 Speculative Decoding — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/05-eagle3-speculative-decoding",
+        "Inference Metrics & Goodput — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/08-inference-metrics-goodput",
+        "SGLang RadixAttention — https://aiengineeringfromscratch.com/lesson.html?path=phases/17-infrastructure-and-production/06-sglang-radixattention"
       ],
       "trigger": null,
       "reason": "Primary serving-internals reference: vLLM internals, continuous batching, SLOs, and a speculative-decoding server.",
@@ -1816,8 +1816,8 @@
         "unit-w12-report"
       ],
       "assigned_sections": [
-        "Model Serving — https://mlsysbook.ai/",
-        "Benchmarking methodology — https://mlsysbook.ai/"
+        "Model Serving — https://mlsysbook.ai/vol1/contents/vol1/model_serving/model_serving.html",
+        "Benchmarking methodology — https://mlsysbook.ai/vol1/contents/vol1/benchmarking/benchmarking.html"
       ],
       "trigger": null,
       "reason": "Serving-systems vocabulary and benchmarking methodology for the whole engine.",
