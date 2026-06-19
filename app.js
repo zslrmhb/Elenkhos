@@ -68,7 +68,7 @@
     // One capstone, two independently reviewable packages.
     var proj = el("section", {"aria-labelledby":"proj-h"});
     proj.appendChild(el("h2", {id:"proj-h", text:"The project"}));
-    proj.appendChild(el("p", {className:"lede", text:"One focused inference-systems project over 12 weeks: a from-scratch LLM inference engine taken deep on the scheduling stack — paged KV cache, Orca continuous batching, Sarathi-Serve chunked prefill, and SLO-aware admission — benchmarked head-to-head against vLLM."}));
+    proj.appendChild(el("p", {className:"lede", text:"One focused inference-systems project over 12 weeks: a from-scratch LLM inference engine and owned Qwen3-0.6B model taken deep on the scheduling stack — paged KV cache, int4 quantization, Orca continuous batching, Sarathi-Serve chunked prefill, and SLO-aware admission — benchmarked Mac/CPU/edge-first against llama.cpp, with vLLM/SGLang kept as an optional CUDA stretch leg."}));
     var pg = el("div", {className:"grid grid-2"});
     M.phases.filter(function(p){return p.phase_id!=="phase-interview-gates";}).forEach(function(ph, i){
       var c = el("div", {className:"card", "data-canonical-id":ph.phase_id});
@@ -126,7 +126,9 @@
     var rec = el("section", {"aria-labelledby":"rec-h"});
     rec.appendChild(el("h2", {id:"rec-h", text:"Proof at a glance"}));
     if (primary) { var pj=el("div",{className:"card","data-canonical-id":primary.project_id});
-      pj.appendChild(el("h3",{text:primary.title})); pj.appendChild(el("p",{text:"Proves: "+primary.signal_ids.map(sigName).join(", ")}));
+      var primarySignals = primary.signal_ids || [];
+      pj.appendChild(el("h3",{text:primary.title}));
+      pj.appendChild(el("p",{text:"Proves: "+(primarySignals.length ? primarySignals.map(sigName).join(", ") : "owned model, inference serving, quantization, scheduling, benchmarking")}));
       var ul2=el("ul",{}); primary.acceptance_criteria.slice(0,3).forEach(function(x){ul2.appendChild(el("li",{text:x}));}); pj.appendChild(ul2); rec.appendChild(pj); }
     var strong = el("div",{className:"card"}); strong.appendChild(el("h3",{text:"Demonstrated capabilities"}));
     var sl=el("ul",{}); SIG.filter(function(s){return (s.evidence_maturity||0)>=4;}).sort(function(x,y){return y.evidence_maturity-x.evidence_maturity;})
@@ -771,7 +773,8 @@
       }
       var activeHours=M.units.filter(function(u){return u.status==="must_do_now" || u.status==="selective_now";})
         .reduce(function(sum,u){return sum+u.estimated_hours;},0);
-      card.appendChild(el("p",{text:"Proves: "+primary.signal_ids.map(sigName).join(", ")+" · "+activeHours+"h build units + "+primary.estimated_hours+"h integration = "+(activeHours+primary.estimated_hours)+"h committed"}));
+      var primarySignals = primary.signal_ids || [];
+      card.appendChild(el("p",{text:"Proves: "+(primarySignals.length ? primarySignals.map(sigName).join(", ") : "owned model, inference serving, quantization, scheduling, benchmarking")+" · "+activeHours+"h build units + "+primary.estimated_hours+"h integration = "+(activeHours+primary.estimated_hours)+"h committed"}));
       var ul=el("ul",{}); primary.acceptance_criteria.forEach(function(x){ul.appendChild(el("li",{text:x}));}); card.appendChild(ul);
       cap.appendChild(card);
     }

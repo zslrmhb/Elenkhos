@@ -79,8 +79,8 @@ dt { font: .7rem/1.3 var(--mono); letter-spacing: .02em; text-transform: none; c
 dd { margin: .1rem 0 0; }
 
 /* ---------- chips: quiet, text-first ---------- */
-.chip { display: inline-block; font: 600 .64rem/1.4 var(--mono); letter-spacing: 0; text-transform: none;
-  padding: .12rem .45rem; border: 1px solid var(--rule-2); border-radius: 999px; color: var(--ink-3); background: transparent; white-space: nowrap; vertical-align: middle; }
+.chip { display: inline-block; max-width: 100%; font: 600 .64rem/1.4 var(--mono); letter-spacing: 0; text-transform: none;
+  padding: .12rem .45rem; border: 1px solid var(--rule-2); border-radius: 999px; color: var(--ink-3); background: transparent; white-space: normal; overflow-wrap: anywhere; vertical-align: middle; }
 .chip.status-must_do_now { color: var(--good); border-color: var(--good); }
 .chip.status-selective_now { color: var(--accent); border-color: var(--accent); }
 .chip.status-later { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 50%, var(--rule-2)); }
@@ -212,8 +212,8 @@ button, .unit-node, a, summary, .chip { transition: color .15s ease, border-colo
 @media (max-width: 640px) {
   :root { font-size: 16px; }
   .header-inner { padding: .7rem 1.1rem; }
-  nav.site-nav { order: 3; width: 100%; overflow-x: auto; padding-bottom: .2rem; }
-  nav.site-nav ul { width: max-content; flex-wrap: nowrap; }
+  nav.site-nav { order: 3; width: 100%; overflow-x: visible; padding-bottom: .2rem; }
+  nav.site-nav ul { width: 100%; flex-wrap: wrap; gap: .1rem .8rem; }
   main { padding: 1.6rem 1.1rem 4rem; }
   h2 { margin-top: 2.2rem; }
   th, td { min-width: 8rem; }
